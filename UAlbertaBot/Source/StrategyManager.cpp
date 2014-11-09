@@ -34,7 +34,30 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
 
-	if (selfRace == BWAPI::Races::Protoss)
+	if (selfRace == BWAPI::Races::Terran)
+	{
+		results = std::vector<IntPair>(NumTerranStrategies);
+
+		if (enemyRace == BWAPI::Races::Protoss)
+		{
+			usableStrategies.push_back(TerranMarineRush);
+			usableStrategies.push_back(TerranSCVWall);
+		}
+		else if (enemyRace == BWAPI::Races::Terran)
+		{
+			usableStrategies.push_back(TerranMarineRush);
+		}
+		else if (enemyRace == BWAPI::Races::Zerg)
+		{
+			usableStrategies.push_back(TerranMarineRush);
+		}
+		else
+		{
+			BWAPI::Broodwar->printf("Enemy Race Unknown");
+			usableStrategies.push_back(TerranMarineRush);
+		}
+	}
+	else if (selfRace == BWAPI::Races::Protoss)
 	{
 		results = std::vector<IntPair>(NumProtossStrategies);
 
@@ -61,11 +84,6 @@ void StrategyManager::addStrategies()
 			usableStrategies.push_back(ProtossZealotRush);
 			usableStrategies.push_back(ProtossDragoons);
 		}
-	}
-	else if (selfRace == BWAPI::Races::Terran)
-	{
-		results = std::vector<IntPair>(NumTerranStrategies);
-		usableStrategies.push_back(TerranMarineRush);
 	}
 	else if (selfRace == BWAPI::Races::Zerg)
 	{
@@ -632,7 +650,8 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int wraithsWanted = numWraith + 4;
 
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,	medicsWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Wraith, wraithsWanted));
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
