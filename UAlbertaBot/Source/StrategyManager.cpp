@@ -28,11 +28,16 @@ void StrategyManager::addStrategies()
 	//protossOpeningBook[ProtossZealotRush]	= "0 0 0 0 1 0 0 3 0 0 3 0 1 3 0 4 4 4 4 4 1 0 4 4 4";
     protossOpeningBook[ProtossZealotRush]	= "0 0 0 0 1 0 3 3 0 0 4 1 4 4 0 4 4 0 1 4 3 0 1 0 4 0 4 4 4 4 1 0 4 4 4";
 	//protossOpeningBook[ProtossZealotRush]	= "0";
-	//protossOpeningBook[ProtossDarkTemplar]	= "0 0 0 0 1 3 0 7 5 0 0 12 3 13 0 22 22 22 22 0 1 0";
-    protossOpeningBook[ProtossDarkTemplar]	=     "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
+	//protossOpeningBook[ProtossDarkTemplar] = "0 0 0 0 1 3 0 7 5 0 0 12 3 13 0 22 22 22 22 0 1 0";
+    protossOpeningBook[ProtossDarkTemplar]	= "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons]		= "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
-	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+
+	
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
+
+	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+	//what the actual fuck do these numbers mean
+	terranOpeningBook[TerranSCVWall] = "0";
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
@@ -41,7 +46,9 @@ void StrategyManager::addStrategies()
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
 			usableStrategies.push_back(TerranMarineRush);
-			usableStrategies.push_back(TerranSCVWall);
+			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
+				usableStrategies.push_back(TerranSCVWall);
+			//}
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
 		{
