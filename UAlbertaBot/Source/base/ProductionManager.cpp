@@ -346,6 +346,7 @@ bool ProductionManager::meetsReservedResources(MetaType type)
 }
 
 // this function will check to see if all preconditions are met and then create a unit
+// this function will check to see if all preconditions are met and then create a unit
 void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t) 
 {
 	if (!producer)
@@ -353,28 +354,32 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 		return;
 	}
 
-	buildLearner.addAction(t);
-
-	// TODO: special case of evolved zerg buildings needs to be handled
+	//buildLearner.addAction(t);
 
 	// if we're dealing with a building
 	if (t.isUnit() && t.unitType.isBuilding() 
 		&& t.unitType != BWAPI::UnitTypes::Zerg_Lair 
 		&& t.unitType != BWAPI::UnitTypes::Zerg_Hive
-		&& t.unitType != BWAPI::UnitTypes::Zerg_Greater_Spire)
+		&& t.unitType != BWAPI::UnitTypes::Zerg_Greater_Spire
+        && !t.unitType.isAddon())
 	{
 		// send the building task to the building manager
 		BuildingManager::Instance().addBuildingTask(t.unitType, BWAPI::Broodwar->self()->getStartLocation());
 	}
+    else if (t.unitType.isAddon())
+    {
+        producer->buildAddon(t.unitType);
+    }
 	// if we're dealing with a non-building unit
 	else if (t.isUnit()) 
 	{
 		// if the race is zerg, morph the unit
-		if (t.unitType.getRace() == BWAPI::Races::Zerg) {
+		if (t.unitType.getRace() == BWAPI::Races::Zerg) 
+        {
 			producer->morph(t.unitType);
-
 		// if not, train the unit
-		} else {
+		} else 
+        {
 			producer->train(t.unitType);
 		}
 	}
@@ -390,12 +395,8 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 	}
 	else
 	{	
-		// critical error check
-//		assert(false);
-
-		//Logger::Instance().log("createMetaType error: " + t.getName() + "\n");
+		
 	}
-	
 }
 
 // selects a unit of a given type
