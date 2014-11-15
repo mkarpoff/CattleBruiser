@@ -1,9 +1,9 @@
-/*#include "Common.h"
+#include "Common.h"
 #include "BWAPI.h"
 #include "HardCodedInfo.h"
 
 // gotta keep c++ static happy
-HardCodedInfo * HardCodedInfo::Instance() = NULL;
+//HardCodedInfo * HardCodedInfo::Instance() = NULL;
 
 // constructor
 HardCodedInfo::HardCodedInfo() 
@@ -17,7 +17,7 @@ HardCodedInfo * HardCodedInfo::Instance()
 	// if the instance doesn't exist, create it
 	if (!HardCodedInfo::Instance()) 
 	{
-		HardCodedInfo::Instance() = new HardCodedInfo();
+		//HardCodedInfo::Instance() = new HardCodedInfo();
 	}
 
 	return HardCodedInfo::Instance();
@@ -183,4 +183,4 @@ void HardCodedInfo::drawChokePoints()
 	{
 		if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawCircleMap(p.x(), p.y(), 10, BWAPI::Colors::Purple, true);
 	}
-}*/
+}
