@@ -57,7 +57,7 @@ class StrategyManager
 	const	MetaPairVector		getProtossDragoonsBuildOrderGoal() const;
 
 	const	MetaPairVector		getTerranMarineRushBuildOrderGoal() const;
-	const	MetaPairVector		getTerranTestStratBuildOrderGoal() const;
+	const	MetaPairVector		getTerranBBSBuildOrderGoal() const;
 	const	MetaPairVector		getZergBuildOrderGoal() const;
 
 	const	MetaPairVector		getProtossOpeningBook() const;
@@ -67,7 +67,7 @@ class StrategyManager
 public:
 
 	enum { ProtossZealotRush=0, ProtossDarkTemplar=1, ProtossDragoons=2, NumProtossStrategies=3 };
-	enum { TerranMarineRush=0, TerranSCVWall=1, NumTerranStrategies=2 };
+	enum { TerranMarineRush=0, TerranSCVWall=1, TerranBBS=2, NumTerranStrategies=3 };
 	enum { ZergZerglingRush=0, NumZergStrategies=1 };
 
 	static	StrategyManager &	Instance();

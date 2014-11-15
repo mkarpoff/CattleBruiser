@@ -38,8 +38,12 @@ void StrategyManager::addStrategies()
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
 	//terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-	//what the actual fuck do these numbers mean
+
+	//This is WIP
 	terranOpeningBook[TerranSCVWall] = "0";
+
+	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
+	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
@@ -49,7 +53,7 @@ void StrategyManager::addStrategies()
 		{
 			usableStrategies.push_back(TerranMarineRush);
 			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
-				usableStrategies.push_back(TerranSCVWall);
+				//usableStrategies.push_back(TerranSCVWall);
 			//}
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
@@ -58,7 +62,7 @@ void StrategyManager::addStrategies()
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
-			usableStrategies.push_back(TerranMarineRush);
+			usableStrategies.push_back(TerranBBS);
 		}
 		else
 		{
@@ -427,7 +431,7 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 	}
 	else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 	{
-		return getTerranBuildOrderGoal();
+		return getTerranBBSBuildOrderGoal();
 	}
 	else
 	{
@@ -712,7 +716,7 @@ const MetaPairVector StrategyManager::getTerranMarineRushBuildOrderGoal() const
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
-const MetaPairVector StrategyManager::getTerranTestStratBuildOrderGoal() const
+const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 {
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
@@ -727,55 +731,19 @@ const MetaPairVector StrategyManager::getTerranTestStratBuildOrderGoal() const
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	int numScience = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
-	int numCovert = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Covert_Ops);
-	int numTurret = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
-	//int armor =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
 	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	//int shellUpgrade =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::U_238_Shells);
 
+	//We want constant pumping out of Marines with this strategy.
 	int marinesWanted = numMarines + 12;
-	int medicsWanted = numMedics + 2;
-	int firebatsWanted = numFirebats + 12;
-	//int vulturesWanted = numVulture + 4;
-	int tanksWanted = numTank + 12;
-	int wraithsWanted = numWraith + 1;
-	int ghostsWanted = numGhosts + 12;
-	
-	//the following sequence of builds allows us to build ghosts and research personnel cloaking
-	if(numFactory > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
-	}
-	if(numStarport > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
-	}
-	if(numScience > 0 )
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Covert_Ops, 1));
-	}
-	if(numTurret < 2)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
-	}
-	if(numCovert > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Personnel_Cloaking, 1));
-	}
-	if(numEngine > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
-	}
-	
-	
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
-	//if we have a science lab with covert ops build ghosts
-	if(numCovert > 0)
+
+	//We attempt to get the U-38 Shell Upgrade with this if-statement.
+	if(numEngine > 0 && numMarines > 10)
 	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Ghost,		ghostsWanted));
+		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
+	
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
