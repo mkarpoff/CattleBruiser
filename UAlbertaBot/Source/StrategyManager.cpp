@@ -648,7 +648,7 @@ const MetaPairVector StrategyManager::getProtossZealotRushBuildOrderGoal() const
 	return goal;
 }
 
-const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
+const MetaPairVector StrategyManager::getTerranMarineRushBuildOrderGoal() const
 {
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
@@ -657,7 +657,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 	int numFirebats = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
 	int numGhosts = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
-	//int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
 	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
@@ -667,6 +667,73 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int numCovert = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Covert_Ops);
 	int numTurret = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
 	//int armor =					BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+
+	int marinesWanted = numMarines + 12;
+	int medicsWanted = numMedics + 2;
+	int firebatsWanted = numFirebats + 12;
+	//int vulturesWanted = numVulture + 4;
+	int tanksWanted = numTank + 12;
+	int wraithsWanted = numWraith + 1;
+	int ghostsWanted = numGhosts + 12;
+	
+	//the following sequence of builds allows us to build ghosts and research personnel cloaking
+	if(numFactory > 0)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
+		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+	}
+	if(numStarport > 0)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
+	}
+	if(numScience > 0 )
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Covert_Ops, 1));
+	}
+	if(numTurret < 2)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
+	}
+	if(numCovert > 0)
+	{
+		goal.push_back(MetaPair(BWAPI::TechTypes::Personnel_Cloaking, 1));
+	}
+	if(numEngine > 0)
+	{
+		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
+	}
+	
+	
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
+	//if we have a science lab with covert ops build ghosts
+	if(numCovert > 0)
+	{
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Ghost,		ghostsWanted));
+	}
+	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+}
+
+const MetaPairVector StrategyManager::getTerranTestStratBuildOrderGoal() const
+{
+	// the goal to return
+	std::vector< std::pair<MetaType, UnitCountType> > goal;
+
+	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	int numFirebats = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
+	int numGhosts = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
+	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numScience = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numCovert = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Covert_Ops);
+	int numTurret = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
+	//int armor =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
 	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
 	int marinesWanted = numMarines + 12;
