@@ -413,29 +413,34 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 {
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss)
 	{
-		if (getCurrentStrategy() == ProtossZealotRush)
-		{
-			return getProtossZealotRushBuildOrderGoal();
+		switch (getCurrentStrategy()){
+		// Insert strategies here for protoss strats
+		case ProtossZealotRush:		return getProtossZealotRushBuildOrderGoal();
+		case ProtossDarkTemplar:	return getProtossDarkTemplarBuildOrderGoal();
+		case ProtossDragoons:		return getProtossDragoonsBuildOrderGoal();
+		// Fallback for is something goes wrong
+		default: return getProtossZealotRushBuildOrderGoal();
 		}
-		else if (getCurrentStrategy() == ProtossDarkTemplar)
-		{
-			return getProtossDarkTemplarBuildOrderGoal();
-		}
-		else if (getCurrentStrategy() == ProtossDragoons)
-		{
-			return getProtossDragoonsBuildOrderGoal();
-		}
-
-		// if something goes wrong, use zealot goal
-		return getProtossZealotRushBuildOrderGoal();
 	}
 	else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 	{
-		return getTerranBBSBuildOrderGoal();
+		switch (getCurrentStrategy()) {
+		
+		// Insert strategies here for terran strats
+		case TerranBBS: return getTerranBBSBuildOrderGoal();
+		case TerranMarineRush: return getTerranMarineRushBuildOrderGoal();
+		// Fallback for is something goes wrong
+		default: return getTerranMarineRushBuildOrderGoal();
+		}
 	}
 	else
 	{
-		return getZergBuildOrderGoal();
+		switch (getCurrentStrategy()) {
+		// Insert strategies here for zerg strats
+			
+		// Fallback for is something goes wrong
+		default: return getZergBuildOrderGoal();
+		}
 	}
 }
 
