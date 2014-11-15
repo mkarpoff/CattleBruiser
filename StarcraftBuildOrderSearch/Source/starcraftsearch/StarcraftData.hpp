@@ -110,6 +110,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Missile_Turret, actions.size()));		//22
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, actions.size()));	//23
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Personnel_Cloaking, actions.size()));			//24
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Bunker, actions.size()));				//25
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{

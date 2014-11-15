@@ -40,10 +40,11 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 
 	//This is WIP
-	terranOpeningBook[TerranSCVWall] = "0";
+	terranOpeningBook[TerranRampCamp] = "0";
 
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
+	terranOpeningBook[TerranBunkerBasher] = "0 0 0 0 3 5 5 25 5 5";
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
@@ -62,7 +63,8 @@ void StrategyManager::addStrategies()
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
-			usableStrategies.push_back(TerranBBS);
+			//usableStrategies.push_back(TerranBBS);
+			usableStrategies.push_back(TerranBunkerBasher);
 		}
 		else
 		{
@@ -225,6 +227,7 @@ void StrategyManager::setStrategy()
             currentStrategy = ProtossZealotRush;
         }
 	}
+	BWAPI::Broodwar->printf("<Current Strategy> %d",currentStrategy);
 
 }
 
@@ -411,6 +414,8 @@ const bool StrategyManager::expandProtossZealotRush() const
 
 const MetaPairVector StrategyManager::getBuildOrderGoal()
 {
+	BWAPI::Broodwar->printf("<Current Strategy> %d",getCurrentStrategy());
+
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss)
 	{
 		switch (getCurrentStrategy()){
@@ -427,8 +432,9 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 		switch (getCurrentStrategy()) {
 		
 		// Insert strategies here for terran strats
-		case TerranBBS: return getTerranBBSBuildOrderGoal();
-		case TerranMarineRush: return getTerranMarineRushBuildOrderGoal();
+		case TerranBBS: BWAPI::Broodwar->printf("BBS Build Order"); return getTerranBBSBuildOrderGoal();
+		case TerranMarineRush: BWAPI::Broodwar->printf("MRush Build Order"); return getTerranMarineRushBuildOrderGoal();
+		case TerranBunkerBasher: BWAPI::Broodwar->printf("Bunker Basher Build Order"); return getTerranBunkerBasherBuildOrderGoal();
 		// Fallback for is something goes wrong
 		default: return getTerranMarineRushBuildOrderGoal();
 		}
@@ -749,6 +755,19 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
 	
+	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+}
+
+const MetaPairVector StrategyManager::getTerranBunkerBasherBuildOrderGoal() const
+{
+	// the goal to return
+	std::vector< std::pair<MetaType, UnitCountType> > goal;
+
+	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+
+	//We want constant pumping out of Marines with this strategy.
+	int marinesWanted = numMarines + 12;
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
