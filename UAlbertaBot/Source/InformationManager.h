@@ -14,7 +14,7 @@ class InformationManager {
 
 	InformationManager();
 
-	SparCraft::Map					map;
+	SparCraft::Map						map;
 
 	UnitData							enemyUnitData;
 	UnitData							selfUnitData;

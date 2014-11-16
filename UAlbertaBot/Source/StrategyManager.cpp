@@ -1,5 +1,7 @@
 #include "Common.h"
 #include "StrategyManager.h"
+#include "InformationManager.h"
+#include "..\..\SparCraft\source\SparCraft.h"
 
 // constructor
 StrategyManager::StrategyManager() 
@@ -53,8 +55,11 @@ void StrategyManager::addStrategies()
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
 			usableStrategies.push_back(TerranMarineRush);
-			//if (Game::mapName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
-				//usableStrategies.push_back(TerranSCVWall);
+
+			std::string file = BWAPI::Broodwar->mapName();
+			BWAPI::Broodwar->printf("%s",file);
+			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
+
 			//}
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
