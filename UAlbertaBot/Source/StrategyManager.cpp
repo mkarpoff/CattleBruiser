@@ -55,10 +55,11 @@ void StrategyManager::addStrategies()
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
 			usableStrategies.push_back(TerranMarineRush);
+
 			std::string file = BWAPI::Broodwar->mapName();
 			BWAPI::Broodwar->printf("%s",file);
 			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
-				//usableStrategies.push_back(TerranSCVWall);
+
 			//}
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
@@ -218,7 +219,6 @@ void StrategyManager::setStrategy()
 	}
 	else
 	{
-		// otherwise return a random strategy
 		if (selfRace == BWAPI::Races::Protoss) {
 			std::string enemyName(BWAPI::Broodwar->enemy()->getName());
         
@@ -230,9 +230,28 @@ void StrategyManager::setStrategy()
 			{
 				currentStrategy = ProtossZealotRush;
 			}
+		} else if (selfRace == BWAPI::Races::Terran){
+
+			if (enemyRace == BWAPI::Races::Protoss)
+			{
+				currentStrategy = TerranMarineRush;
+			}
+			else if (enemyRace == BWAPI::Races::Terran)
+			{
+				currentStrategy = TerranMarineRush;
+			}
+			else if (enemyRace == BWAPI::Races::Zerg)
+			{
+				currentStrategy = TerranBunkerBasher;
+			}
+			else
+			{
+				BWAPI::Broodwar->printf("Enemy Race Unknown");
+				currentStrategy = TerranMarineRush;
+			}
 		}
 	}
-	BWAPI::Broodwar->printf("<Current Strategy> %d",currentStrategy);
+	BWAPI::Broodwar->printf("<Current Strategy> %d" ,currentStrategy);
 
 }
 
@@ -419,8 +438,6 @@ const bool StrategyManager::expandProtossZealotRush() const
 
 const MetaPairVector StrategyManager::getBuildOrderGoal()
 {
-	BWAPI::Broodwar->printf("<Current Strategy> %d",getCurrentStrategy());
-
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss)
 	{
 		switch (getCurrentStrategy()){
@@ -437,9 +454,9 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 		switch (getCurrentStrategy()) {
 		
 		// Insert strategies here for terran strats
-		case TerranBBS: BWAPI::Broodwar->printf("BBS Build Order"); return getTerranBBSBuildOrderGoal();
-		case TerranMarineRush: BWAPI::Broodwar->printf("MRush Build Order"); return getTerranMarineRushBuildOrderGoal();
-		case TerranBunkerBasher: BWAPI::Broodwar->printf("Bunker Basher Build Order"); return getTerranBunkerBasherBuildOrderGoal();
+		case TerranBBS:				return getTerranBBSBuildOrderGoal();
+		case TerranMarineRush:		return getTerranMarineRushBuildOrderGoal();
+		case TerranBunkerBasher:	return getTerranBunkerBasherBuildOrderGoal();
 		// Fallback for is something goes wrong
 		default: return getTerranMarineRushBuildOrderGoal();
 		}
