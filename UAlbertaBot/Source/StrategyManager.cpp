@@ -215,17 +215,18 @@ void StrategyManager::setStrategy()
 	else
 	{
 		// otherwise return a random strategy
-
-        std::string enemyName(BWAPI::Broodwar->enemy()->getName());
+		if (selfRace == BWAPI::Races::Protoss) {
+			std::string enemyName(BWAPI::Broodwar->enemy()->getName());
         
-        if (enemyName.compare("Skynet") == 0)
-        {
-            currentStrategy = ProtossDarkTemplar;
-        }
-        else
-        {
-            currentStrategy = ProtossZealotRush;
-        }
+			if (enemyName.compare("Skynet") == 0)
+			{
+				currentStrategy = ProtossDarkTemplar;
+			}
+			else
+			{
+				currentStrategy = ProtossZealotRush;
+			}
+		}
 	}
 	BWAPI::Broodwar->printf("<Current Strategy> %d",currentStrategy);
 
