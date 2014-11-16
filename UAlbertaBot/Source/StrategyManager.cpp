@@ -229,11 +229,11 @@ void StrategyManager::setStrategy()
 
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
-				currentStrategy = TerranMarineRush;
+				currentStrategy = TerranBBS;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
-				currentStrategy = TerranMarineRush;
+				currentStrategy = TerranBBS;
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
@@ -242,7 +242,7 @@ void StrategyManager::setStrategy()
 			else
 			{
 				BWAPI::Broodwar->printf("Enemy Race Unknown");
-				currentStrategy = TerranMarineRush;
+				currentStrategy = TerranBBS;
 			}
 		}
 	}
