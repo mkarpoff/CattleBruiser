@@ -248,7 +248,7 @@ std::vector<MetaType> StarcraftBuildOrderSearchManager::getMetaVector(std::strin
 
 void StarcraftBuildOrderSearchManager::drawSearchInformation(int x, int y)
 {
-	starcraftSearchData.drawSearchResults(10, 240);
+	//starcraftSearchData.drawSearchResults(10, 240);
 }
 
 	

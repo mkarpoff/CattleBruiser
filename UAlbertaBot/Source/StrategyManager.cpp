@@ -53,9 +53,9 @@ void StrategyManager::addStrategies()
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
 			usableStrategies.push_back(TerranMarineRush);
-			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
+			if (Game::mapName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
 				//usableStrategies.push_back(TerranSCVWall);
-			//}
+			}
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
 		{
