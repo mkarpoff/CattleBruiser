@@ -32,6 +32,7 @@ public:
 	void						handleGasWorkers();
 	void						handleMoveWorkers();
 	void						handleCombatWorkers();
+	void						handleCampWorkers();
 	void						finishedWithCombatWorkers();
 
 	void						drawResourceDebugInfo();

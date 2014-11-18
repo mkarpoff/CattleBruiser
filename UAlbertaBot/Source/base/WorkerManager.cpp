@@ -201,6 +201,19 @@ void WorkerManager::handleMoveWorkers()
 	}
 }
 
+void WorkerManager::handleCampWorkers() 
+{
+	// for each of our workers
+	BOOST_FOREACH (BWAPI::Unit * worker, workerData.getWorkers())
+	{
+		// if it is a move worker
+		if (workerData.getWorkerJob(worker) == WorkerData::Camp) 
+		{
+			//worker->move(data.position);
+		}
+	}
+}
+
 // set a worker to mine minerals
 void WorkerManager::setMineralWorker(BWAPI::Unit * unit)
 {
