@@ -3,6 +3,9 @@
 #include <Common.h>
 #include "BuildingManager.h"
 #include "WorkerData.h"
+#include <BWAPI.h>
+#include <BWTA.h>
+#include "MapTools.h"
 
 class Building;
 
@@ -21,6 +24,13 @@ class WorkerManager {
 
 public:
 
+	BWAPI::Position				workerPos;
+	BWAPI::Position				enemyPos;
+	BWAPI::Position				chokePos;
+	BWTA::Chokepoint *			enemyChoke;
+		
+	bool						useCamping;
+	
 	void						update();
 	void						onUnitDestroy(BWAPI::Unit * unit);
 	void						onUnitMorph(BWAPI::Unit * unit);

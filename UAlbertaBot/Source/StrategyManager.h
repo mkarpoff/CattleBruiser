@@ -57,6 +57,7 @@ class StrategyManager
 	const	MetaPairVector		getProtossDragoonsBuildOrderGoal() const;
 
 	const	MetaPairVector		getTerranMarineRushBuildOrderGoal() const;
+	const   MetaPairVector      getTerranRampCampBuildOrderGoal() const;
 	const	MetaPairVector		getTerranBBSBuildOrderGoal() const;
 	const	MetaPairVector		getTerranBunkerBasherBuildOrderGoal() const;
 	const	MetaPairVector		getZergBuildOrderGoal() const;

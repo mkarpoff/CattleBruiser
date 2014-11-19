@@ -2,6 +2,7 @@
 #include "StrategyManager.h"
 #include "InformationManager.h"
 #include "..\..\SparCraft\source\SparCraft.h"
+#include "base\WorkerData.h"
 
 // constructor
 StrategyManager::StrategyManager() 
@@ -54,10 +55,10 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			usableStrategies.push_back(TerranMarineRush);
-
-			std::string file = BWAPI::Broodwar->mapName();
-			BWAPI::Broodwar->printf("%s",file);
+			//usableStrategies.push_back(TerranMarineRush);
+			usableStrategies.push_back(TerranRampCamp);
+			//std::string file = BWAPI::Broodwar->mapName();
+			//BWAPI::Broodwar->printf("%s",file);
 			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
 
 			//}
@@ -234,7 +235,8 @@ void StrategyManager::setStrategy()
 
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
-				currentStrategy = TerranBBS;
+				//currentStrategy = TerranBBS;
+				currentStrategy = TerranRampCamp;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
@@ -457,6 +459,7 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 		case TerranBBS:				return getTerranBBSBuildOrderGoal();
 		case TerranMarineRush:		return getTerranMarineRushBuildOrderGoal();
 		case TerranBunkerBasher:	return getTerranBunkerBasherBuildOrderGoal();
+		case TerranRampCamp:		return getTerranRampCampBuildOrderGoal();
 		// Fallback for is something goes wrong
 		default: return getTerranMarineRushBuildOrderGoal();
 		}
@@ -751,6 +754,44 @@ const MetaPairVector StrategyManager::getTerranMarineRushBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 {
+	// the goal to return
+	std::vector< std::pair<MetaType, UnitCountType> > goal;
+
+	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	int numFirebats = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
+	int numGhosts = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
+	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	//int shellUpgrade =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::U_238_Shells);
+
+	//We want constant pumping out of Marines with this strategy.
+	int marinesWanted = numMarines + 12;
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+
+	//We attempt to get the U-38 Shell Upgrade with this if-statement.
+	if(numEngine > 0 && numMarines > 10)
+	{
+		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
+	
+	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+}
+
+const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
+{
+	WorkerManager::Instance().useCamping = true;
+	if(WorkerManager::Instance().useCamping) {
+		BWAPI::Broodwar->printf("WorkerManagerCamping = true");
+	} else {
+		BWAPI::Broodwar->printf("WorkerManagerCamping = false");
+	}
+	//WorkerData::setWorkerJob(worker,WorkerData::Camp);
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 

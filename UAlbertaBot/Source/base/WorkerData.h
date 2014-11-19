@@ -52,6 +52,9 @@ public:
 
 	WorkerData();
 
+	void					createCampers();
+	int						getNumCamperWorkers();
+
 	void					workerDestroyed(BWAPI::Unit * unit);
 	void					addDepot(BWAPI::Unit * unit);
 	void					removeDepot(BWAPI::Unit * unit);
@@ -61,6 +64,7 @@ public:
 	void					setWorkerJob(BWAPI::Unit * unit, WorkerJob job, BWAPI::Unit * jobUnit);
 	void					setWorkerJob(BWAPI::Unit * unit, WorkerJob job, WorkerMoveData wmd);
 	void					setWorkerJob(BWAPI::Unit * unit, WorkerJob job, BWAPI::UnitType jobUnitType);
+	void					setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job);
 
 	int						getNumWorkers();
 	int						getNumMineralWorkers();

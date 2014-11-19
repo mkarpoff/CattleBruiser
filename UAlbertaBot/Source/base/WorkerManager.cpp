@@ -2,13 +2,15 @@
 #include "WorkerManager.h"
 
 WorkerManager::WorkerManager() 
-    : workersPerRefinery(3) 
+    : workersPerRefinery(3)
 {
     previousClosestWorker = NULL;
+	useCamping = false;
 }
 
 void WorkerManager::update() 
 {
+	BWAPI::Broodwar->printf("Updating WORKER MANAGER");
 	// worker bookkeeping
 	updateWorkerStatus();
 
@@ -24,6 +26,13 @@ void WorkerManager::update()
 	// handle combat workers
 	handleCombatWorkers();
 
+	
+	if (useCamping) {
+		BWAPI::Broodwar->printf("HANDLING CAMPERS");
+		//handle camp workers
+		workerData.createCampers();
+		handleCampWorkers();
+	}
 	drawResourceDebugInfo();
 	//drawWorkerInformation(450,20);
 
@@ -206,10 +215,14 @@ void WorkerManager::handleCampWorkers()
 	// for each of our workers
 	BOOST_FOREACH (BWAPI::Unit * worker, workerData.getWorkers())
 	{
-		// if it is a move worker
+		// if it is a camp worker
 		if (workerData.getWorkerJob(worker) == WorkerData::Camp) 
 		{
-			//worker->move(data.position);
+			workerPos = worker->getPosition();
+			enemyPos = MapTools::Instance().getEnemyBaseMoveTo(workerPos);
+			enemyChoke = BWTA::getNearestChokepoint(enemyPos);
+			chokePos = enemyChoke->getCenter();
+			worker->move(chokePos);
 		}
 	}
 }

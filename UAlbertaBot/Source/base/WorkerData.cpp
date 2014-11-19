@@ -160,13 +160,55 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job, WorkerMove
 	{
 		workerMoveMap[unit] = wmd;
 	}
-
 	if (workerJobMap[unit] != Move)
 	{
 		BWAPI::Broodwar->printf("Something went horribly wrong");
 	}
 }
+//-------------------------------------------------------------------
+void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job)
+{
+	if (!unit) { return; }
 
+	clearPreviousJob(unit);
+	workerJobMap[unit] = job;
+
+	if (workerJobMap[unit] != Camp)
+	{
+		BWAPI::Broodwar->printf("Something went horribly wrong");
+	}
+}
+
+void WorkerData::createCampers() {
+	int num = getNumCamperWorkers();
+	if (num < 3) {
+		
+		BOOST_FOREACH (BWAPI::Unit * unit, workers)
+		{
+			if (workerJobMap[unit] == WorkerData::Minerals)
+			{
+				num++;
+				setWorkerJob(unit,WorkerData::Camp);
+				if (num >= 3) {
+					return;
+				}
+			}
+		}
+	}
+}
+
+int WorkerData::getNumCamperWorkers() {
+	size_t num = 0;
+	BOOST_FOREACH (BWAPI::Unit * unit, workers)
+	{
+		if (workerJobMap[unit] == WorkerData::Camp)
+		{
+			num++;
+		}
+	}
+	return num;
+}
+//-------------------------------------------------------------------
 
 void WorkerData::clearPreviousJob(BWAPI::Unit * unit)
 {
@@ -533,6 +575,7 @@ char WorkerData::getJobCode(BWAPI::Unit * unit)
 	if (j == WorkerData::Repair) return 'R';
 	if (j == WorkerData::Move) return 'O';
 	if (j == WorkerData::Scout) return 'S';
+	if (j == WorkerData::Camp) return 'P';
 	return 'X';
 }
 
