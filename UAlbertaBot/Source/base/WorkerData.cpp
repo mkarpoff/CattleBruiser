@@ -159,7 +159,7 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job, WorkerMove
 	if (job == Move)
 	{
 		workerMoveMap[unit] = wmd;
-	}
+	}	
 	if (workerJobMap[unit] != Move)
 	{
 		BWAPI::Broodwar->printf("Something went horribly wrong");
@@ -179,22 +179,37 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job)
 	}
 }
 
-void WorkerData::createCampers() {
+/*
+ * returns true iff there were less than 3 campers and it was able to make enough to have 3 campers
+ */
+bool WorkerData::createCampers()
+{
 	int num = getNumCamperWorkers();
 	if (num < 3) {
-		
-		BOOST_FOREACH (BWAPI::Unit * unit, workers)
-		{
-			if (workerJobMap[unit] == WorkerData::Minerals)
-			{
-				num++;
-				setWorkerJob(unit,WorkerData::Camp);
-				if (num >= 3) {
-					return;
+		if (getNumIdleWorkers() != 0) {
+			BOOST_FOREACH (BWAPI::Unit * unit, workers) {
+				if (workerJobMap[unit] == WorkerData::Idle) {
+					num++;
+					setWorkerJob(unit,WorkerData::Camp);
+					if (num >= 3) {
+						return true;
+					}
+				}
+			}
+		}
+		if (num < 3) {
+			BOOST_FOREACH (BWAPI::Unit * unit, workers) {
+				if (workerJobMap[unit] == WorkerData::Minerals) {
+					num++;
+					setWorkerJob(unit,WorkerData::Camp);
+					if (num >= 3) {
+						return true;
+					}
 				}
 			}
 		}
 	}
+	return false;
 }
 
 int WorkerData::getNumCamperWorkers() {
