@@ -213,15 +213,18 @@ void WorkerManager::handleMoveWorkers()
 void WorkerManager::handleCampWorkers() 
 {
 	// for each of our workers
-	BOOST_FOREACH (BWAPI::Unit * worker, workerData.getWorkers())
-	{
+	BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
+	if (enemyBaseLocation == NULL)	{ return; } // Returns null during init
+	BWAPI::Position enemyBasePosition = enemyBaseLocation->getPosition();
+	if (enemyBasePosition == NULL)	{ return; } // Returns null during init
+	BWTA::Chokepoint * enemyChoke = BWTA::getNearestChokepoint(enemyBasePosition);
+	if (enemyChoke == NULL)			{ return; } // Returns null during init
+	BWAPI::Position	chokePos = enemyChoke->getCenter();
+	if (chokePos == NULL)			{ return; } // Returns null during init
+	
+	BOOST_FOREACH (BWAPI::Unit * worker, workerData.getWorkers()) {
 		// if it is a camp worker
-		if (workerData.getWorkerJob(worker) == WorkerData::Camp) 
-		{
-			workerPos = worker->getPosition();
-			enemyPos = MapTools::Instance().getEnemyBaseMoveTo(workerPos);
-			enemyChoke = BWTA::getNearestChokepoint(enemyPos);
-			chokePos = enemyChoke->getCenter();
+		if (workerData.getWorkerJob(worker) == WorkerData::Camp) {
 			worker->move(chokePos);
 		}
 	}
@@ -677,4 +680,14 @@ WorkerManager & WorkerManager::Instance() {
 
 	static WorkerManager instance;
 	return instance;
+}
+
+bool WorkerManager::isCampingActive()
+{
+	return useCamping;
+}
+
+void WorkerManager::setCampingActive(bool state)
+{
+	useCamping = state;
 }

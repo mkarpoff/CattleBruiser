@@ -19,17 +19,17 @@ class WorkerManager {
 	int							workersPerRefinery;
 
 	void						setMineralWorker(BWAPI::Unit * unit);
+	
+	bool						useCamping;
 
 	WorkerManager();
 
 public:
 
-	BWAPI::Position				workerPos;
-	BWAPI::Position				enemyPos;
-	BWAPI::Position				chokePos;
-	BWTA::Chokepoint *			enemyChoke;
-		
-	bool						useCamping;
+
+	
+	bool						isCampingActive();
+	void						setCampingActive(bool state);
 	
 	void						update();
 	void						onUnitDestroy(BWAPI::Unit * unit);

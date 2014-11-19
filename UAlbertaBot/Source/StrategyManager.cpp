@@ -785,12 +785,8 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 {
-	WorkerManager::Instance().useCamping = true;
-	if(WorkerManager::Instance().useCamping) {
-		BWAPI::Broodwar->printf("WorkerManagerCamping = true");
-	} else {
-		BWAPI::Broodwar->printf("WorkerManagerCamping = false");
-	}
+	WorkerManager::Instance().setCampingActive(true);
+
 	//WorkerData::setWorkerJob(worker,WorkerData::Camp);
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
