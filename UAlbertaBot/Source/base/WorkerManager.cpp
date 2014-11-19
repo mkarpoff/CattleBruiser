@@ -10,7 +10,6 @@ WorkerManager::WorkerManager()
 
 void WorkerManager::update() 
 {
-	BWAPI::Broodwar->printf("Updating WORKER MANAGER");
 	// worker bookkeeping
 	updateWorkerStatus();
 
@@ -25,12 +24,13 @@ void WorkerManager::update()
 
 	// handle combat workers
 	handleCombatWorkers();
-
 	
 	if (useCamping) {
-		BWAPI::Broodwar->printf("HANDLING CAMPERS");
 		//handle camp workers
-		workerData.createCampers();
+		if (workerData.getNumCamperWorkers() < 3 && campingAttempts != 0) {
+			workerData.createCampers();
+			--campingAttempts;
+		}
 		handleCampWorkers();
 	}
 	drawResourceDebugInfo();
@@ -687,7 +687,12 @@ bool WorkerManager::isCampingActive()
 	return useCamping;
 }
 
-void WorkerManager::setCampingActive(bool state)
+void WorkerManager::setCampingActive(bool state, int attempts)
 {
-	useCamping = state;
+	if (attempts == 0) {
+		useCamping = false;
+	} else {
+		useCamping = state;
+	}
+	campingAttempts = attempts;
 }

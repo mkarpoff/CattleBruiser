@@ -21,6 +21,7 @@ class WorkerManager {
 	void						setMineralWorker(BWAPI::Unit * unit);
 	
 	bool						useCamping;
+	int							campingAttempts;
 
 	WorkerManager();
 
@@ -29,7 +30,7 @@ public:
 
 	
 	bool						isCampingActive();
-	void						setCampingActive(bool state);
+	void						setCampingActive(bool state, int tries=-1);
 	
 	void						update();
 	void						onUnitDestroy(BWAPI::Unit * unit);

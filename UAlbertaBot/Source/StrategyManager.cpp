@@ -55,7 +55,7 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			//usableStrategies.push_back(TerranMarineRush);
+			usableStrategies.push_back(TerranMarineRush);
 			usableStrategies.push_back(TerranRampCamp);
 			//std::string file = BWAPI::Broodwar->mapName();
 			//BWAPI::Broodwar->printf("%s",file);
@@ -69,7 +69,7 @@ void StrategyManager::addStrategies()
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
-			//usableStrategies.push_back(TerranBBS);
+			usableStrategies.push_back(TerranBBS);
 			usableStrategies.push_back(TerranBunkerBasher);
 		}
 		else
@@ -785,14 +785,16 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 {
-	WorkerManager::Instance().setCampingActive(true);
-
-	//WorkerData::setWorkerJob(worker,WorkerData::Camp);
+	WorkerManager wManager = WorkerManager::Instance();
+	if(!wManager.isCampingActive()) {
+		wManager.setCampingActive(true);
+	}
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
 	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	/*int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 	int numFirebats = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
 	int numGhosts = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
 	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
@@ -801,8 +803,7 @@ const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
-	//int shellUpgrade =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::U_238_Shells);
+	//int shellUpgrade =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::U_238_Shells);*/
 
 	//We want constant pumping out of Marines with this strategy.
 	int marinesWanted = numMarines + 12;
