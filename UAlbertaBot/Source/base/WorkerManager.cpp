@@ -28,11 +28,14 @@ void WorkerManager::update()
 	if (useCamping) {
 		//handle camp workers
 		if (workerData.getNumCamperWorkers() < 3 && campingAttempts != 0) {
-			workerData.createCampers();
-			--campingAttempts;
+			bool builtCampers = workerData.createCampers();
+			if (builtCampers) {
+				--campingAttempts;
+			}
 		}
-		handleCampWorkers();
 	}
+	handleCampWorkers();
+
 	drawResourceDebugInfo();
 	//drawWorkerInformation(450,20);
 
@@ -214,13 +217,13 @@ void WorkerManager::handleCampWorkers()
 {
 	// for each of our workers
 	BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
-	if (enemyBaseLocation == NULL)	{ return; } // Returns null during init
+	if (enemyBaseLocation == NULL)	{ return; } // Returns null during init nowhere for campers to go
 	BWAPI::Position enemyBasePosition = enemyBaseLocation->getPosition();
-	if (enemyBasePosition == NULL)	{ return; } // Returns null during init
+	if (enemyBasePosition == NULL)	{ return; } // Returns null during init nowhere for campers to go
 	BWTA::Chokepoint * enemyChoke = BWTA::getNearestChokepoint(enemyBasePosition);
-	if (enemyChoke == NULL)			{ return; } // Returns null during init
+	if (enemyChoke == NULL)			{ return; } // Returns null during init nowhere for campers to go
 	BWAPI::Position	chokePos = enemyChoke->getCenter();
-	if (chokePos == NULL)			{ return; } // Returns null during init
+	if (chokePos == NULL)			{ return; } // Returns null during init nowhere for campers to go
 	
 	BOOST_FOREACH (BWAPI::Unit * worker, workerData.getWorkers()) {
 		// if it is a camp worker
@@ -689,10 +692,6 @@ bool WorkerManager::isCampingActive()
 
 void WorkerManager::setCampingActive(bool state, int attempts)
 {
-	if (attempts == 0) {
-		useCamping = false;
-	} else {
-		useCamping = state;
-	}
+	useCamping = state;
 	campingAttempts = attempts;
 }

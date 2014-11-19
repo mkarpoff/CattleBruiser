@@ -43,7 +43,7 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 
 	//This is WIP
-	terranOpeningBook[TerranRampCamp] = "0";
+	terranOpeningBook[TerranRampCamp] = "";
 
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
@@ -55,7 +55,7 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			usableStrategies.push_back(TerranMarineRush);
+			//usableStrategies.push_back(TerranMarineRush);
 			usableStrategies.push_back(TerranRampCamp);
 			//std::string file = BWAPI::Broodwar->mapName();
 			//BWAPI::Broodwar->printf("%s",file);
@@ -253,7 +253,13 @@ void StrategyManager::setStrategy()
 			}
 		}
 	}
-	BWAPI::Broodwar->printf("<Current Strategy> %d" ,currentStrategy);
+	switch(currentStrategy) {
+	case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
+	case TerranRampCamp: BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp"); return;
+	case TerranBunkerBasher: BWAPI::Broodwar->printf("<Current Strategy> TerranBunkerBasher"); return;
+		
+	default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+	}
 
 }
 
@@ -466,12 +472,7 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 	}
 	else
 	{
-		switch (getCurrentStrategy()) {
-		// Insert strategies here for zerg strats
-			
-		// Fallback for is something goes wrong
-		default: return getZergBuildOrderGoal();
-		}
+		return getZergBuildOrderGoal();
 	}
 }
 
@@ -785,9 +786,9 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 {
-	WorkerManager wManager = WorkerManager::Instance();
-	if(!wManager.isCampingActive()) {
-		wManager.setCampingActive(true);
+
+	if(!WorkerManager::Instance().isCampingActive()) {
+		WorkerManager::Instance().setCampingActive(true, 1);
 	}
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
@@ -810,7 +811,10 @@ const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 
 	//We attempt to get the U-38 Shell Upgrade with this if-statement.
-	if(numEngine > 0 && numMarines > 10)
+	if (numEngine == 0) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
+	}
+	else if( numMarines > 10)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
