@@ -158,7 +158,7 @@ bool Squad::needsToRegroup()
 	}
 
 	// if we are DT rushing and we haven't lost a DT yet, no retreat!
-	if (BWAPI::Broodwar->self()->getRace == BWAPI::Races::Terran &&
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran &&
 		StrategyManager::Instance().getCurrentStrategy() == StrategyManager::ProtossDarkTemplar &&
 		(BWAPI::Broodwar->self()->deadUnitCount(BWAPI::UnitTypes::Protoss_Dark_Templar) == 0))
 	{
