@@ -27,8 +27,12 @@ void WorkerManager::update()
 	
 	if (useCamping) {
 		//handle camp workers
-		if (workerData.getNumCamperWorkers() < 3 && campingAttempts != 0) {
-			bool builtCampers = workerData.createCampers(getNumOfWorkersToChoke());
+		int numNeeded = getNumOfWorkersToChoke();
+		if (numNeeded > 3) { 
+			useCamping = false;
+		}
+		else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
+			bool builtCampers = workerData.createCampers(numNeeded);
 			if (builtCampers) {
 				--campingAttempts;
 			}
