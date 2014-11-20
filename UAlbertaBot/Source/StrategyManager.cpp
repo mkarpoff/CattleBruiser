@@ -39,15 +39,15 @@ void StrategyManager::addStrategies()
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
 	//Conner's opening build. builds marines between major buildings so we have some small defense
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
-	//terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
-	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
+	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0";
 
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
-	terranOpeningBook[TerranBunkerBasher] = "0 0 0 0 3 5 5 25 5 5";
+	terranOpeningBook[TerranAntiFourPool] = "0 0 0 0 3 5 5 25 5 5";
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
@@ -55,7 +55,7 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			//usableStrategies.push_back(TerranMarineRush);
+			//usableStrategies.push_back(TerranDefault);
 			usableStrategies.push_back(TerranRampCamp);
 			//std::string file = BWAPI::Broodwar->mapName();
 			//BWAPI::Broodwar->printf("%s",file);
@@ -65,17 +65,17 @@ void StrategyManager::addStrategies()
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
 		{
-			usableStrategies.push_back(TerranMarineRush);
+			usableStrategies.push_back(TerranDefault);
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
 			usableStrategies.push_back(TerranBBS);
-			usableStrategies.push_back(TerranBunkerBasher);
+			usableStrategies.push_back(TerranAntiFourPool);
 		}
 		else
 		{
 			BWAPI::Broodwar->printf("Enemy Race Unknown");
-			usableStrategies.push_back(TerranMarineRush);
+			usableStrategies.push_back(TerranDefault);
 		}
 	}
 	else if (selfRace == BWAPI::Races::Protoss)
@@ -151,22 +151,26 @@ void StrategyManager::readResults()
 		std::ifstream f_in(readFile.c_str());
 		std::string line;
 		getline(f_in, line);
-		results[ProtossZealotRush].first = atoi(line.c_str());
+		results[TerranDefault].first = atoi(line.c_str());
 		getline(f_in, line);
-		results[ProtossZealotRush].second = atoi(line.c_str());
+		results[TerranDefault].second = atoi(line.c_str());
 		getline(f_in, line);
-		results[ProtossDarkTemplar].first = atoi(line.c_str());
+		results[TerranBBS].first = atoi(line.c_str());
 		getline(f_in, line);
-		results[ProtossDarkTemplar].second = atoi(line.c_str());
+		results[TerranBBS].second = atoi(line.c_str());
 		getline(f_in, line);
-		results[ProtossDragoons].first = atoi(line.c_str());
+		results[TerranAntiFourPool].first = atoi(line.c_str());
 		getline(f_in, line);
-		results[ProtossDragoons].second = atoi(line.c_str());
+		results[TerranAntiFourPool].second = atoi(line.c_str());
+		getline(f_in, line);
+		results[TerranRampCamp].first = atoi(line.c_str());
+		getline(f_in, line);
+		results[TerranRampCamp].second = atoi(line.c_str());
 		f_in.close();
 	}
 
-	BWAPI::Broodwar->printf("Results (%s): (%d %d) (%d %d) (%d %d)", BWAPI::Broodwar->enemy()->getName().c_str(), 
-		results[0].first, results[0].second, results[1].first, results[1].second, results[2].first, results[2].second);
+	BWAPI::Broodwar->printf("Results (%s): (%d %d) (%d %d) (%d %d) (%d %d)", BWAPI::Broodwar->enemy()->getName().c_str(), 
+		results[0].first, results[0].second, results[1].first, results[1].second, results[2].first, results[2].second, results[3].first, results[3].second);
 }
 
 void StrategyManager::writeResults()
@@ -174,12 +178,14 @@ void StrategyManager::writeResults()
 	std::string writeFile = writeDir + BWAPI::Broodwar->enemy()->getName() + ".txt";
 	std::ofstream f_out(writeFile.c_str());
 
-	f_out << results[ProtossZealotRush].first   << "\n";
-	f_out << results[ProtossZealotRush].second  << "\n";
-	f_out << results[ProtossDarkTemplar].first  << "\n";
-	f_out << results[ProtossDarkTemplar].second << "\n";
-	f_out << results[ProtossDragoons].first     << "\n";
-	f_out << results[ProtossDragoons].second    << "\n";
+	f_out << results[TerranDefault].first   << "\n";
+	f_out << results[TerranDefault].second  << "\n";
+	f_out << results[TerranBBS].first  << "\n";
+	f_out << results[TerranBBS].second << "\n";
+	f_out << results[TerranAntiFourPool].first     << "\n";
+	f_out << results[TerranAntiFourPool].second    << "\n";
+	f_out << results[TerranRampCamp].first     << "\n";
+	f_out << results[TerranRampCamp].second    << "\n";
 
 	f_out.close();
 }
@@ -244,7 +250,7 @@ void StrategyManager::setStrategy()
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
-				currentStrategy = TerranBunkerBasher;
+				currentStrategy = TerranAntiFourPool;
 			}
 			else
 			{
@@ -256,7 +262,7 @@ void StrategyManager::setStrategy()
 	switch(currentStrategy) {
 	case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
 	case TerranRampCamp: BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp"); return;
-	case TerranBunkerBasher: BWAPI::Broodwar->printf("<Current Strategy> TerranBunkerBasher"); return;
+	case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
 		
 	default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
 	}
@@ -463,11 +469,11 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 		
 		// Insert strategies here for terran strats
 		case TerranBBS:				return getTerranBBSBuildOrderGoal();
-		case TerranMarineRush:		return getTerranMarineRushBuildOrderGoal();
-		case TerranBunkerBasher:	return getTerranBunkerBasherBuildOrderGoal();
+		case TerranDefault:			return getTerranDefaultBuildOrderGoal();
+		case TerranAntiFourPool:	return getTerranAntiFourPoolBuildOrderGoal();
 		case TerranRampCamp:		return getTerranRampCampBuildOrderGoal();
 		// Fallback for is something goes wrong
-		default: return getTerranMarineRushBuildOrderGoal();
+		default: return getTerranDefaultBuildOrderGoal();
 		}
 	}
 	else
@@ -686,7 +692,7 @@ const MetaPairVector StrategyManager::getProtossZealotRushBuildOrderGoal() const
 	return goal;
 }
 
-const MetaPairVector StrategyManager::getTerranMarineRushBuildOrderGoal() const
+const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 {
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
@@ -822,7 +828,7 @@ const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
-const MetaPairVector StrategyManager::getTerranBunkerBasherBuildOrderGoal() const
+const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() const
 {
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
