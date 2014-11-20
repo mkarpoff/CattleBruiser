@@ -45,7 +45,10 @@ void StrategyManager::addStrategies()
         */
         // Ben's default opening code:
         // 1. Don't max scvs on the first Refinery yet, build 2 marines first.
-        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 0 5 5 6 5 5 5 5 ";
+        // 2. get some marines, build academy. More marines, medic after academy. Missile turret after some more marines.
+        // 3. Hit factory asap - Leads to quicker tanks/vultures
+        // * Can edit marine sub-build order in order to see what is best defense build.
+        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 0 5 5 6 5 5 5 5 5 5 8 8 5 5 5 5 22 5 5 5 5 9";
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
 
