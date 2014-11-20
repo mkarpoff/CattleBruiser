@@ -40,8 +40,12 @@ void StrategyManager::addStrategies()
 	//Conner's opening build. builds marines between major buildings so we have some small defense
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
 	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
+        /* Original Terran Default
 	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-
+        */
+        // Ben's default opening code:
+        // 1. Don't max scvs on the first Refinery yet, build 2 marines first.
+        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 0 5 5 6 5 5 5 5 ";
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
 
@@ -72,6 +76,7 @@ void StrategyManager::addStrategies()
 			usableStrategies.push_back(TerranBBS);
 			usableStrategies.push_back(TerranAntiFourPool);
 		}
+               
 		else
 		{
 			BWAPI::Broodwar->printf("Enemy Race Unknown");
