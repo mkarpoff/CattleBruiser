@@ -233,7 +233,6 @@ void WorkerManager::handleCampWorkers()
 		
 	BWAPI::Color c = BWAPI::Colors::Red;
 	BWAPI::Broodwar->drawCircleMap(f_x, f_y, 3, c, true);
-	c = BWAPI::Colors::Green;
 	BWAPI::Broodwar->drawCircleMap(s_x, s_y, 3, c, true);
 	int spot = 0;
 	
