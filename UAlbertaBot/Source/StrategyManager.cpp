@@ -43,10 +43,10 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 
 	//This is WIP
-	terranOpeningBook[TerranRampCamp] = "0";
+	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
 
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
-	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
+	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
 	terranOpeningBook[TerranAntiFourPool] = "0 0 0 0 3 5 5 25 5 5";
 
 	if (selfRace == BWAPI::Races::Terran)
@@ -261,7 +261,12 @@ void StrategyManager::setStrategy()
 	}
 	switch(currentStrategy) {
 	case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
-	case TerranRampCamp: BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp"); return;
+	case TerranRampCamp: 
+		if(!WorkerManager::Instance().isCampingActive()) {
+			WorkerManager::Instance().setCampingActive(true, 1);
+		}
+		BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
+		return;
 	case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
 		
 	default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
@@ -793,9 +798,6 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 {
 
-	if(!WorkerManager::Instance().isCampingActive()) {
-		WorkerManager::Instance().setCampingActive(true, 1);
-	}
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
