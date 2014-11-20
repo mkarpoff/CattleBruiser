@@ -182,22 +182,22 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job)
 /*
  * returns true iff there were less than 3 campers and it was able to make enough to have 3 campers
  */
-bool WorkerData::createCampers()
+bool WorkerData::createCampers(int numOfCampersNeeded)
 {
 	int num = getNumCamperWorkers();
-	if (num < 3) {
+	if (num < numOfCampersNeeded) {
 		if (getNumIdleWorkers() != 0) {
 			BOOST_FOREACH (BWAPI::Unit * unit, workers) {
 				if (workerJobMap[unit] == WorkerData::Idle) {
 					num++;
 					setWorkerJob(unit,WorkerData::Camp);
-					if (num >= 3) {
+					if (num >= numOfCampersNeeded) {
 						return true;
 					}
 				}
 			}
 		}
-		if (num < 3) {
+		if (num < numOfCampersNeeded) {
 			BOOST_FOREACH (BWAPI::Unit * unit, workers) {
 				if (workerJobMap[unit] == WorkerData::Minerals) {
 					num++;

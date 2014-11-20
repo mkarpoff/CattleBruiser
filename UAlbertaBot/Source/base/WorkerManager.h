@@ -22,7 +22,8 @@ class WorkerManager {
 	
 	bool						useCamping;
 	int							campingAttempts;
-
+	int							numOfWorkersToChoke;
+	std::vector<BWAPI::Position> chokeSpots;
 	WorkerManager();
 
 public:
@@ -31,7 +32,9 @@ public:
 	
 	bool						isCampingActive();
 	void						setCampingActive(bool state, int tries=-1);
-	
+	void						checkCampSpots(BWTA::Chokepoint * chokePosition);
+	int							getNumOfWorkersToChoke();
+
 	void						update();
 	void						onUnitDestroy(BWAPI::Unit * unit);
 	void						onUnitMorph(BWAPI::Unit * unit);

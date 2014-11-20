@@ -52,7 +52,7 @@ public:
 
 	WorkerData();
 
-	bool					createCampers();
+	bool					createCampers(int numOfCampersNeeded);
 	int						getNumCamperWorkers();
 
 	void					workerDestroyed(BWAPI::Unit * unit);
