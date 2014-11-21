@@ -43,7 +43,7 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 
 	//This is WIP
-	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
+	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
 
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
@@ -259,19 +259,20 @@ void StrategyManager::setStrategy()
 			}
 		}
 	}
-	switch(currentStrategy) {
-	case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
-	case TerranRampCamp: 
-		if(!WorkerManager::Instance().isCampingActive()) {
-			WorkerManager::Instance().setCampingActive(true, 1);
-		}
-		BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
-		return;
-	case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
+		switch(currentStrategy) {
+		case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
+		case TerranRampCamp: 
+			if(!WorkerManager::Instance().isCampingActive()) {
+				WorkerManager::Instance().setCampingActive(true, 1);
+			}
+			BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
+			return;
+		case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
 		
-	default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+		default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+		}
 	}
-
 }
 
 void StrategyManager::onEnd(const bool isWinner)
@@ -384,13 +385,29 @@ const int StrategyManager::defendWithWorkers()
 	return enemyUnitsNearWorkers;
 }
 
+const int StrategyManager::getNumberUnitsNeededForAttack() const
+{
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
+		switch(currentStrategy) {
+		case TerranDefault:		return 1;
+		case TerranBBS:			return 1;
+		case TerranRampCamp:	return 1;
+		case TerranAntiFourPool:return 1;
+		default: return 1;
+		}
+	}
+	else {
+		return 1;
+	}
+}
+
 // called by combat commander to determine whether or not to send an attack force
 // freeUnits are the units available to do this attack
 const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 {
 	int ourForceSize = (int)freeUnits.size();
 
-	int numUnitsNeededForAttack = 1;
+	int numUnitsNeededForAttack = getNumberUnitsNeededForAttack();
 
 	bool doAttack  = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Dark_Templar) >= 1
 					|| ourForceSize >= numUnitsNeededForAttack;
@@ -862,7 +879,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
- const int StrategyManager::getCurrentStrategy()
+const int StrategyManager::getCurrentStrategy()
  {
 	 return currentStrategy;
  }
