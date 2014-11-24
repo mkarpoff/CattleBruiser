@@ -1,0 +1,34 @@
+Problem Codes:
+1 - Selects Wrong Choke Point
+2 - Zealots don't fall for the block without a Marine
+3 - Probes don't fall for the block without a Marine
+4 - Positioning is off slightly
+5 - Too Wide to Choke
+6 - Blockers leave too late, due to no early scouting
+
+Benzene - 1
+Destination - 1
+Heartbreak Ridge - 2
+Aztec - 4, 6
+Tau Cross - 2, 4, 6
+Andromeda - 1, 6
+Circuit Breaker - 6
+Empire of the Sun - 5, 6
+Foretress - 5, 6
+Python - 5, 6 
+
+Individual Map Comments:
+
+Heartbreak Ridge - Unsure why it fails but I believe it's due to how the Chokepoint is located. 
+Need a marine there ASAP or it won't be viable.
+
+Andromeda - The choke is never attempted since the point it calculates is 7 wide even though there is a perfectly usable ramp to block.
+
+Empire of the Sun - The choke is calculated to be 4 SCV's wide.
+It MIGHT be worth attempting but it likely suffers from the same problems as Heartbreak Ridge.
+
+
+
+
+
+
