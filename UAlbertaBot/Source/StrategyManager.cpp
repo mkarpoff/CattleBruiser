@@ -35,16 +35,14 @@ void StrategyManager::addStrategies()
     protossOpeningBook[ProtossDarkTemplar]	= "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons]		= "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 
-	
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
+
 	//Conner's opening build. builds marines between major buildings so we have some small defense
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
 	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
 	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
-
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
 	terranOpeningBook[TerranAntiFourPool] = "0 0 0 0 3 5 5 25 5 5";

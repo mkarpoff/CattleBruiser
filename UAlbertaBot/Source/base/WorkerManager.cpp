@@ -25,19 +25,7 @@ void WorkerManager::update()
 	// handle combat workers
 	handleCombatWorkers();
 	
-	if (useCamping) {
-		//handle camp workers
-		int numNeeded = getNumOfWorkersToChoke();
-		if (numNeeded > 3) { 
-			useCamping = false;
-		}
-		else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
-			bool builtCampers = workerData.createCampers(numNeeded);
-			if (builtCampers) {
-				--campingAttempts;
-			}
-		}
-	}
+	
 	handleCampWorkers();
 
 	drawResourceDebugInfo();
@@ -219,6 +207,20 @@ void WorkerManager::handleMoveWorkers()
 
 void WorkerManager::handleCampWorkers() 
 {
+	if (!useCamping) {
+		return;
+	}
+	//handle camp workers
+	int numNeeded = getNumOfWorkersToChoke();
+	if (numNeeded > 3) { 
+		useCamping = false;
+	}
+	else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
+		bool builtCampers = workerData.createCampers(numNeeded);
+		if (builtCampers) {
+			--campingAttempts;
+		}
+	}
 	// for each of our workers
 	BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
 	if (enemyBaseLocation == NULL)	{ return; } // Returns null during init nowhere for campers to go
@@ -553,7 +555,6 @@ void WorkerManager::onUnitShow(BWAPI::Unit * unit)
 	}
 }
 
-
 void WorkerManager::rebalanceWorkers()
 {
 	// for each worker
@@ -698,8 +699,8 @@ int WorkerManager::getNumGasWorkers()
 	return workerData.getNumGasWorkers();
 }
 
-
-WorkerManager & WorkerManager::Instance() {
+WorkerManager & WorkerManager::Instance()
+{
 
 	static WorkerManager instance;
 	return instance;
@@ -724,12 +725,12 @@ int WorkerManager::getNumOfWorkersToChoke()
 			BWAPI::Broodwar->printf("Error calulating number of Workers to choke");
 			return 0; 
 		} 
-		BWAPI::Position myBasePosition = enemyBaseLocation->getPosition();
-		if (myBasePosition == NULL)	{ // Returns null during init nowhere for campers to go
+		BWAPI::Position basePosition = enemyBaseLocation->getPosition();
+		if (basePosition == NULL)	{ // Returns null during init nowhere for campers to go
 			BWAPI::Broodwar->printf("Error calulating number of Workers to choke");
 			return 0; 
 		} 
-		BWTA::Chokepoint * chokePoint = BWTA::getNearestChokepoint(myBasePosition);
+		BWTA::Chokepoint * chokePoint = BWTA::getNearestChokepoint(basePosition);
 
 		int chokeWidth = (int) chokePoint->getWidth();
 		int needExtra = (chokeWidth % 23 > 20)? 1:0;
