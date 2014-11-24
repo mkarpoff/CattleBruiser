@@ -48,7 +48,7 @@ void StrategyManager::addStrategies()
         // 2. get some marines, build academy. More marines, medic after academy. Missile turret after some more marines.
         // 3. Hit factory asap - Leads to quicker tanks/vultures
         // * Can edit marine sub-build order in order to see what is best defense build.
-        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 0 5 5 6 5 5 5 5 5 5 8 8 5 5 5 5 22 5 5 5 5 9";
+        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 0 5 5 6 5 5 5 20 3 5 5 5 8 8 5 5 5 5 22 5 5 5 5 9 12 9 13 5 5 12 5 5 12 12  18 18";
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
 
@@ -62,8 +62,8 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			//usableStrategies.push_back(TerranDefault);
-			usableStrategies.push_back(TerranRampCamp);
+			usableStrategies.push_back(TerranDefault);
+			//usableStrategies.push_back(TerranRampCamp);
 			//std::string file = BWAPI::Broodwar->mapName();
 			//BWAPI::Broodwar->printf("%s",file);
 			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
@@ -76,8 +76,9 @@ void StrategyManager::addStrategies()
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
-			usableStrategies.push_back(TerranBBS);
-			usableStrategies.push_back(TerranAntiFourPool);
+			usableStrategies.push_back(TerranDefault);
+			//usableStrategies.push_back(TerranBBS);
+			//usableStrategies.push_back(TerranAntiFourPool);
 		}
                
 		else
@@ -250,20 +251,27 @@ void StrategyManager::setStrategy()
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
 				//currentStrategy = TerranBBS;
-				currentStrategy = TerranRampCamp;
+				//changed
+				//currentStrategy = TerranRampCamp;
+				currentStrategy = TerranDefault;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
-				currentStrategy = TerranBBS;
+				//changed
+				//currentStrategy = TerranBBS;
+				currentStrategy = TerranDefault;
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
-				currentStrategy = TerranAntiFourPool;
+				//changed
+				//currentStrategy = TerranAntiFourPool;
+				currentStrategy = TerranDefault;
 			}
 			else
 			{
+				//changed
 				BWAPI::Broodwar->printf("Enemy Race Unknown");
-				currentStrategy = TerranBBS;
+				currentStrategy = TerranDefault;
 			}
 		}
 	}
@@ -715,29 +723,27 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	int numFirebats = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
 	int numGhosts = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
 	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
-	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	//int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
-	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	int numScience = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
-	int numCovert = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Covert_Ops);
+	//int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	//int numScience = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	//int numCovert = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Covert_Ops);
 	int numTurret = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
 	//int armor =					BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
 	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
 	int marinesWanted = numMarines + 12;
-	int medicsWanted = numMedics + 2;
-	int firebatsWanted = numFirebats + 12;
-	//int vulturesWanted = numVulture + 4;
+	int medicsWanted = numMedics + 5;
+	int vulturesWanted = numVulture + 4;
 	int tanksWanted = numTank + 12;
-	int wraithsWanted = numWraith + 1;
-	int ghostsWanted = numGhosts + 12;
 	
+	/*
 	//the following sequence of builds allows us to build ghosts and research personnel cloaking
 	if(numFactory > 0)
 	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
+		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
 		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
 	}
 	if(numStarport > 0)
@@ -747,15 +753,16 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	if(numScience > 0 )
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Covert_Ops, 1));
-	}
+	}*/
 	if(numTurret < 2)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
 	}
+	/*
 	if(numCovert > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::TechTypes::Personnel_Cloaking, 1));
-	}
+	}*/
 	if(numEngine > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
@@ -764,11 +771,16 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
+	// Couple more additions to try and push some vultures at start
+	// then push lots more tanks
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));
 	//if we have a science lab with covert ops build ghosts
+	/*
 	if(numCovert > 0)
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Ghost,		ghostsWanted));
-	}
+	}*/
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
