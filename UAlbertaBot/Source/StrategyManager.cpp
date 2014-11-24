@@ -55,8 +55,9 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			//usableStrategies.push_back(TerranDefault);
+			usableStrategies.push_back(TerranDefault);
 			usableStrategies.push_back(TerranRampCamp);
+
 			//std::string file = BWAPI::Broodwar->mapName();
 			//BWAPI::Broodwar->printf("%s",file);
 			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
@@ -71,6 +72,7 @@ void StrategyManager::addStrategies()
 		{
 			usableStrategies.push_back(TerranBBS);
 			usableStrategies.push_back(TerranAntiFourPool);
+			usableStrategies.push_back(TerranDefault);
 		}
 		else
 		{
@@ -241,12 +243,13 @@ void StrategyManager::setStrategy()
 
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
-				//currentStrategy = TerranBBS;
+				//currentStrategy = TerranDefault;
 				currentStrategy = TerranRampCamp;
+				//currentStrategy = TerranBBS;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
-				currentStrategy = TerranBBS;
+				currentStrategy = TerranDefault;
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
@@ -255,7 +258,7 @@ void StrategyManager::setStrategy()
 			else
 			{
 				BWAPI::Broodwar->printf("Enemy Race Unknown");
-				currentStrategy = TerranBBS;
+				currentStrategy = TerranDefault;
 			}
 		}
 	}
@@ -766,6 +769,8 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 {
+	bool medicFlag = false;
+
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
@@ -780,18 +785,24 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
 	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
-	//int shellUpgrade =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::U_238_Shells);
 
 	//We want constant pumping out of Marines with this strategy.
-	int marinesWanted = numMarines + 12;
+	int marinesWanted = numMarines + 2;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 
-	//We attempt to get the U-38 Shell Upgrade with this if-statement.
+	//We attempt to get the U-38 Shell Upgrade and Stim Packs with this if-statement.
 	if(numEngine > 0 && numMarines > 10)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+		medicFlag = true;
 	}
-	
+
+	//+2 Medics if 10 marines are alive. Does not attempt Medics until Stims are done.
+	if (medicFlag) { 
+		int medicsWanted = numMedics + 2; 
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,	medicsWanted));
+	}
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
