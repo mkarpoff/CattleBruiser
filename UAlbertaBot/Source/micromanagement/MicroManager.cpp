@@ -180,6 +180,31 @@ void MicroManager::smartAttackUnit(BWAPI::Unit * attacker, BWAPI::Unit * target)
 
 }
 
+void MicroManager::useStimPack(BWAPI::Unit * attacker) const
+{
+	assert(attacker);
+
+	// if we have issued a command to this unit already this frame, ignore this one
+	if (attacker->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount() || attacker->isAttackFrame())
+	{
+		return;
+	}
+
+	// get the unit's current command
+	BWAPI::UnitCommand currentCommand(attacker->getLastCommand());
+
+	// if we've already told this unit to attack this target, ignore this command
+	if (currentCommand.getType() == BWAPI::UnitCommandTypes::Use_Tech)
+	{
+	
+		return;
+	}
+
+	// if nothing prevents it, use stim packs
+	attacker->useTech(BWAPI::TechTypes::Stim_Packs);
+
+}
+
 void MicroManager::smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
 {
 	assert(attacker);
