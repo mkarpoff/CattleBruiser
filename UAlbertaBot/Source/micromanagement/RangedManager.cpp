@@ -69,6 +69,9 @@ void RangedManager::kiteTarget(BWAPI::Unit * rangedUnit, BWAPI::Unit * target)
 	if (range <= target->getType().groundWeapon().maxRange())
 	{
 		// if we can't kite it, there's no point
+		if( rangedUnit->getType() == BWAPI::UnitTypes::Terran_Marine && rangedUnit->getStimTimer() == 0 && rangedUnit->getHitPoints() > 20 ) {
+			useStimPack(rangedUnit);	
+		}
 		smartAttackUnit(rangedUnit, target);
 		return;
 	}
@@ -108,6 +111,9 @@ void RangedManager::kiteTarget(BWAPI::Unit * rangedUnit, BWAPI::Unit * target)
 	// otherwise shoot
 	else
 	{
+		if( (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Marine) && (rangedUnit->getStimTimer() == 0 && rangedUnit->getHitPoints() > 20) ) {
+			useStimPack(rangedUnit);	
+		}
 		smartAttackUnit(rangedUnit, target);
 	}
 }
