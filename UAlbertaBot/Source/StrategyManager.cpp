@@ -35,16 +35,14 @@ void StrategyManager::addStrategies()
     protossOpeningBook[ProtossDarkTemplar]	= "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons]		= "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 
-	
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
+
 	//Conner's opening build. builds marines between major buildings so we have some small defense
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
 	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
 	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-
 	//This is WIP
-	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
-
+	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
 	terranOpeningBook[TerranAntiFourPool] = "0 0 0 0 3 5 5 25 5 5";
@@ -262,19 +260,20 @@ void StrategyManager::setStrategy()
 			}
 		}
 	}
-	switch(currentStrategy) {
-	case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
-	case TerranRampCamp: 
-		if(!WorkerManager::Instance().isCampingActive()) {
-			WorkerManager::Instance().setCampingActive(true, 1);
-		}
-		BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
-		return;
-	case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
+		switch(currentStrategy) {
+		case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
+		case TerranRampCamp: 
+			if(!WorkerManager::Instance().isCampingActive()) {
+				WorkerManager::Instance().setCampingActive(true, 1);
+			}
+			BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
+			return;
+		case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
 		
-	default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+		default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+		}
 	}
-
 }
 
 void StrategyManager::onEnd(const bool isWinner)
@@ -387,13 +386,29 @@ const int StrategyManager::defendWithWorkers()
 	return enemyUnitsNearWorkers;
 }
 
+const int StrategyManager::getNumberUnitsNeededForAttack() const
+{
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
+		switch(currentStrategy) {
+		case TerranDefault:		return 1;
+		case TerranBBS:			return 1;
+		case TerranRampCamp:	return 1;
+		case TerranAntiFourPool:return 1;
+		default: return 1;
+		}
+	}
+	else {
+		return 1;
+	}
+}
+
 // called by combat commander to determine whether or not to send an attack force
 // freeUnits are the units available to do this attack
 const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 {
 	int ourForceSize = (int)freeUnits.size();
 
-	int numUnitsNeededForAttack = 1;
+	int numUnitsNeededForAttack = getNumberUnitsNeededForAttack();
 
 	bool doAttack  = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Dark_Templar) >= 1
 					|| ourForceSize >= numUnitsNeededForAttack;
@@ -873,7 +888,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
- const int StrategyManager::getCurrentStrategy()
+const int StrategyManager::getCurrentStrategy()
  {
 	 return currentStrategy;
  }

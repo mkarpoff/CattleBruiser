@@ -39,7 +39,7 @@ class StrategyManager
 	void	setStrategy();
 	void	readResults();
 	void	writeResults();
-
+	const	int					getNumberUnitsNeededForAttack() const;
 	const	int					getScore(BWAPI::Player * player) const;
 	const	double				getUCBValue(const size_t & strategy) const;
 	
