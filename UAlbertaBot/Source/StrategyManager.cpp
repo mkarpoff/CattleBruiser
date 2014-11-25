@@ -739,13 +739,14 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	int vulturesWanted = numVulture + 4;
 	int tanksWanted = numTank + 12;
 	
-	/*
+	
 	//the following sequence of builds allows us to build ghosts and research personnel cloaking
 	if(numFactory > 0)
 	{
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
 	}
+	/*
 	if(numStarport > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
@@ -756,7 +757,7 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	}*/
 	if(numTurret < 2)
 	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 3));
 	}
 	/*
 	if(numCovert > 0)
