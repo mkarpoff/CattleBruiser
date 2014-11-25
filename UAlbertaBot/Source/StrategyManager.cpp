@@ -55,22 +55,20 @@ void StrategyManager::addStrategies()
 		{
 			usableStrategies.push_back(TerranDefault);
 			usableStrategies.push_back(TerranRampCamp);
-
-			//std::string file = BWAPI::Broodwar->mapName();
-			//BWAPI::Broodwar->printf("%s",file);
-			//if (Game::mapFileName() != ("(4)Python.scx" || "(4)Fortress.scx" ) ){
-
-			//}
+			usableStrategies.push_back(TerranBBS);
+			usableStrategies.push_back(TerranAntiFourPool);
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
 		{
 			usableStrategies.push_back(TerranDefault);
+			usableStrategies.push_back(TerranBBS);
+			usableStrategies.push_back(TerranAntiFourPool);
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
+			usableStrategies.push_back(TerranDefault);
 			usableStrategies.push_back(TerranBBS);
 			usableStrategies.push_back(TerranAntiFourPool);
-			usableStrategies.push_back(TerranDefault);
 		}
 		else
 		{
@@ -247,7 +245,7 @@ void StrategyManager::setStrategy()
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
-				currentStrategy = TerranDefault;
+				currentStrategy = TerranAntiFourPool;
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
@@ -867,7 +865,7 @@ const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() cons
 	int hasBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 	int hasAcademy = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 	int hasRefinery = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
-	int hasStims = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs);
+	bool hasStims = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs);
 	int numExtra = BWAPI::Broodwar->self()->minerals() / 100;
 
 	//We want constant pumping out of Marines with this strategy.
