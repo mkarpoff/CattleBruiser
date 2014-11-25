@@ -25,8 +25,23 @@ void RangedManager::executeMicro(const UnitVector & targets)
 		//trainSubUnits(rangedUnit);
 
 		// if the order is to attack or defend
+		
+		BWAPI::Unit * carrier = rangedUnit->getCarrier();
+		if ( carrier != NULL) {
+			if (MapTools::Instance().getGroundDistance(carrier->getPosition(), order.position) < order.radius ) {
+				carrier->unload(rangedUnit);
+			}
+		}
 		if (order.type == order.Attack || order.type == order.Defend) {
-
+			UnitVector ourUnits;
+			MapGrid::Instance().GetUnits(ourUnits, order.position, order.radius, true, false);
+			BOOST_FOREACH(BWAPI::Unit * bunker, ourUnits) {
+				if (bunker->getType() == BWAPI::UnitTypes::Terran_Bunker) {
+					if(bunker->getLoadedUnits().size() < 4) {
+						rangedUnit->rightClick(bunker);
+					}
+				}
+			}
 			// if there are targets
 			if (!rangedUnitTargets.empty())
 			{

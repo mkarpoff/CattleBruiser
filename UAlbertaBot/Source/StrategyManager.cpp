@@ -45,7 +45,7 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
 	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
-	terranOpeningBook[TerranAntiFourPool] = "0 0 0 0 3 5 5 25 5 5";
+	terranOpeningBook[TerranAntiFourPool] = "0 0 0 3 0 25 5 5 5 5";
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
@@ -841,11 +841,11 @@ const MetaPairVector StrategyManager::getTerranRampCampBuildOrderGoal() const
 	//int shellUpgrade =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::U_238_Shells);*/
 
 	//We want constant pumping out of Marines with this strategy.
-	int marinesWanted = numMarines + 12;
+	int marinesWanted = numMarines + 1;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 
 	//We attempt to get the U-38 Shell Upgrade with this if-statement.
-	if (numEngine == 0) {
+	if (numEngine == 0 && numMarines > 10) {
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
 	}
 	else if( numMarines > 10)
@@ -861,10 +861,11 @@ const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() cons
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
-	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numExtra = BWAPI::Broodwar->self()->minerals() / 100;
 
 	//We want constant pumping out of Marines with this strategy.
-	int marinesWanted = numMarines + 12;
+	int marinesWanted = numMarines + 4 + numExtra;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
