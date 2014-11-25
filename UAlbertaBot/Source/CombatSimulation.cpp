@@ -58,11 +58,15 @@ void CombatSimulation::setCombatUnits(const BWAPI::Position & center, const int 
 // Gets a SparCraft unit from a BWAPI::Unit, used for our own units since we have all their info
 const SparCraft::Unit CombatSimulation::getSparCraftUnit(BWAPI::Unit * unit) const
 {
+	int strength = unit->getHitPoints() + unit->getShields();
+	if ( unit->getType() == BWAPI::UnitTypes::Terran_Marine && unit->getStimTimer() != 0 ) {
+		strength += 20;
+	}
     return SparCraft::Unit( unit->getType(),
                             SparCraft::Position(unit->getPosition()), 
                             unit->getID(), 
                             getSparCraftPlayerID(unit->getPlayer()), 
-                            unit->getHitPoints() + unit->getShields(), 
+                            strength, 
                             0,
 		                    BWAPI::Broodwar->getFrameCount(), 
                             BWAPI::Broodwar->getFrameCount());	

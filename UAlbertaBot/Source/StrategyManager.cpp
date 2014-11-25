@@ -242,7 +242,7 @@ void StrategyManager::setStrategy()
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
 				//currentStrategy = TerranDefault;
-				currentStrategy = TerranRampCamp;
+				currentStrategy = TerranAntiFourPool;
 				//currentStrategy = TerranBBS;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
@@ -867,6 +867,10 @@ const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() cons
 	//We want constant pumping out of Marines with this strategy.
 	int marinesWanted = numMarines + 4 + numExtra;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+	if( numMarines > 9)
+	{
+		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	}
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 

@@ -32,6 +32,7 @@ protected:
 	void				drawOrderText();
 	void				smartAttackUnit(BWAPI::Unit * attacker, BWAPI::Unit * target) const;
 	void				useStimPack(BWAPI::Unit * attacker) const;
+	void				useSpiderMines(BWAPI::Unit * attacker) const;
 	void				smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
 	void				smartMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
 	bool				unitNearEnemy(BWAPI::Unit * unit);
