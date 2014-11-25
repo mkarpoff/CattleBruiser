@@ -205,6 +205,31 @@ void MicroManager::useStimPack(BWAPI::Unit * attacker) const
 
 }
 
+void MicroManager::useSpiderMines(BWAPI::Unit * attacker) const
+{
+	assert(attacker);
+
+	// if we have issued a command to this unit already this frame, ignore this one
+	if (attacker->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount() || attacker->isAttackFrame())
+	{
+		return;
+	}
+
+	// get the unit's current command
+	BWAPI::UnitCommand currentCommand(attacker->getLastCommand());
+
+	// if we've already told this unit to attack this target, ignore this command
+	if (currentCommand.getType() == BWAPI::UnitCommandTypes::Use_Tech)
+	{
+	
+		return;
+	}
+
+	// if nothing prevents it, use spider mines
+	attacker->useTech(BWAPI::TechTypes::Spider_Mines);
+
+}
+
 void MicroManager::smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
 {
 	assert(attacker);
