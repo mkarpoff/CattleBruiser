@@ -81,4 +81,7 @@ public:
 	BWAPI::Position getEnemyBaseMoveTo(BWAPI::Position p);
 	
 	void parseMap();
+	BWTA::Chokepoint * MapTools::getChokePointOnPath(BWTA::BaseLocation * player, BWTA::BaseLocation * enemy);
+	int MapTools::getNumOfWorkersToChoke(BWTA::Chokepoint * chokePoint);
+	void MapTools::checkCampSpots(BWTA::Chokepoint * chokePoint, std::vector<BWAPI::Position> * chokeSpots);
 };

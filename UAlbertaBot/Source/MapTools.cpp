@@ -388,3 +388,93 @@ void MapTools::parseMap()
 
 	mapFile.close();
 }
+
+
+BWTA::Chokepoint * MapTools::getChokePointOnPath(BWTA::BaseLocation * player, BWTA::BaseLocation * enemy)
+{
+		if (player == NULL || enemy == NULL)	{ return NULL; }
+		BWAPI::TilePosition enemyBaseTilePosition = enemy->getTilePosition();
+		BWAPI::TilePosition playerBaseTilePosition = player->getTilePosition();
+		BWAPI::Position enemyBasePosition = enemy->getPosition();
+		BWAPI::Position playerBasePosition = player->getPosition();
+		if ( playerBasePosition == NULL || playerBaseTilePosition == NULL 
+			|| enemyBasePosition == NULL || enemyBaseTilePosition == NULL)	{ return NULL; }
+		
+		return BWTA::getNearestChokepoint(enemyBasePosition);
+
+		// This won't work for now
+		/*std::vector<BWAPI::TilePosition> path = BWTA::getShortestPath(enemyBaseTilePosition, playerBaseTilePosition);
+		const std::set<BWTA::Chokepoint*> chokePoints = BWTA::getChokepoints();
+		BOOST_FOREACH(BWAPI::TilePosition tile, path ) {
+			BOOST_FOREACH(BWTA::Chokepoint * choke, chokePoints) {
+				int t_x = tile.x();
+				int t_y = tile.y();
+				int c_y = choke->getCenter().x() /320;
+				int c_x = choke->getCenter().y() /320;
+				if (c_x = t_x) {
+					if (c_y = t_y) {
+						BWAPI::Broodwar->printf(" First choke found %d %d %d %d", c_x, c_y, t_x, t_y);
+						return choke;
+					}
+				}
+			}
+		}
+		BWAPI::Broodwar->printf("No choke found");
+		return BWTA::getNearestChokepoint(enemyBasePosition); */
+}
+
+
+int MapTools::getNumOfWorkersToChoke(BWTA::Chokepoint * chokePoint)
+{
+	if (chokePoint == NULL) {
+		return 0;
+	}
+	int chokeWidth = (int) chokePoint->getWidth();
+	int needExtra = (chokeWidth % 43 > 20)? 1:0;
+	int numOfWorkers = chokeWidth / 23;
+	numOfWorkers += needExtra;
+	return numOfWorkers;
+}
+
+
+void MapTools::checkCampSpots(BWTA::Chokepoint * chokePoint, std::vector<BWAPI::Position> * chokeSpots)
+{
+	if(chokeSpots->size() == 0) {
+		if (chokePoint == NULL) { return; } // Returns null during init nowhere for campers to go
+		std::pair<BWAPI::Position, BWAPI::Position>	chokeSides = chokePoint->getSides();
+		int numSpots = getNumOfWorkersToChoke(chokePoint);
+		int f_x = chokeSides.first.x();
+		int f_y = chokeSides.first.y();
+		int s_x = chokeSides.second.x();
+		int s_y = chokeSides.second.y();
+
+
+		int d_x = std::max(f_x, s_x) - std::min(f_x, s_x);
+		int d_y = std::max(f_y, s_y) - std::min(f_y, s_y);
+		int t_x = d_x/numSpots;
+		int t_y = d_y/numSpots;
+		int n_x;
+		if (f_x < s_x) {
+			n_x = f_x + (d_x - std::abs(t_x * (numSpots - 1)))/2;
+		} else {
+			n_x = f_x - (d_x - std::abs(t_x * (numSpots - 1)))/2;
+			t_x = -t_x;
+		}
+	
+		int n_y;
+		if (f_y < s_y) {
+			n_y = f_y + (d_y - std::abs(t_y * (numSpots - 1)))/2;
+		} else {
+			n_y = f_y - (d_y - std::abs(t_y * (numSpots - 1)))/2;
+			t_y = -t_y;
+		}
+
+		chokeSpots->push_back(BWAPI::Position(n_x, n_y));
+	
+		for (int i = 1; i < numSpots; ++i) {
+			n_x += t_x;
+			n_y += t_y;
+			chokeSpots->push_back(BWAPI::Position(n_x, n_y));
+		}
+	}
+}

@@ -210,49 +210,53 @@ void WorkerManager::handleCampWorkers()
 	if (!useCamping) {
 		return;
 	}
-	//handle camp workers
-	int numNeeded = getNumOfWorkersToChoke();
-	if (numNeeded > 3) { 
-		useCamping = false;
-	}
-	else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
-		bool builtCampers = workerData.createCampers(numNeeded);
-		if (builtCampers) {
-			--campingAttempts;
-		}
-	}
-	// for each of our workers
-	BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
-	if (enemyBaseLocation == NULL)	{ return; } // Returns null during init nowhere for campers to go
-	BWAPI::Position enemyBasePosition = enemyBaseLocation->getPosition();
-	if (enemyBasePosition == NULL)	{ return; } // Returns null during init nowhere for campers to go
-	BWTA::Chokepoint * enemyChoke = BWTA::getNearestChokepoint(enemyBasePosition);
+	if (chokeSpots.empty()) {
+		BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
+		if (enemyBaseLocation == NULL) {return; } 
 	
-	int numSpots = getNumOfWorkersToChoke();
-	checkCampSpots(enemyChoke);
-
-	std::pair<BWAPI::Position, BWAPI::Position>	chokeSides = enemyChoke->getSides();
-	int f_x = chokeSides.first.x();
-	int f_y = chokeSides.first.y();
-	int s_x = chokeSides.second.x();
-	int s_y = chokeSides.second.y();
+		BWTA::BaseLocation * myBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->self());
+		//handle camp workers
+		BWTA::Chokepoint * enemyChoke = MapTools::Instance().getChokePointOnPath(myBaseLocation, enemyBaseLocation);
+		if (enemyChoke == NULL) return;
+		int numNeeded = MapTools::Instance().getNumOfWorkersToChoke(enemyChoke);
+	
+		MapTools::Instance().checkCampSpots(enemyChoke, &chokeSpots);
 		
-	BWAPI::Color c = BWAPI::Colors::Red;
-	BWAPI::Broodwar->drawCircleMap(f_x, f_y, 3, c, true);
-	BWAPI::Broodwar->drawCircleMap(s_x, s_y, 3, c, true);
-	int spot = 0;
+		if (numNeeded > 3) { 
+			useCamping = false;
+		}
+		else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
+			bool builtCampers = workerData.createCampers(numNeeded);
+			if (builtCampers) {
+				--campingAttempts;
+			}
+		}
+		// for each of our workers
+
+		std::pair<BWAPI::Position, BWAPI::Position>	chokeSides = enemyChoke->getSides();
 	
-	c = BWAPI::Colors::Cyan;
+		int f_x = chokeSides.first.x();
+		int f_y = chokeSides.first.y();
+		int s_x = chokeSides.second.x();
+		int s_y = chokeSides.second.y();
+		
+		BWAPI::Color c = BWAPI::Colors::Red;
+		BWAPI::Broodwar->drawCircleMap(f_x, f_y, 3, c, true);
+		BWAPI::Broodwar->drawCircleMap(s_x, s_y, 3, c, true);
+	}
+	int spot = 0;
+	BWAPI::Color c = BWAPI::Colors::Cyan;
 	BOOST_FOREACH (BWAPI::Position pos, chokeSpots) {
 		BWAPI::Broodwar->drawCircleMap(pos.x(), pos.y(), 3, c, false);
 	}
 	BOOST_FOREACH (BWAPI::Unit * worker, workerData.getWorkers()) {
 		// if it is a camp worker
-		if (spot >= numSpots) { return; }
+		if (spot >= chokeSpots.size()) { return; }
 		if (workerData.getWorkerJob(worker) == WorkerData::Camp) {
 			worker->move(chokeSpots.at(spot++));
 		}
 	}
+
 }
 
 // set a worker to mine minerals
@@ -717,69 +721,4 @@ void WorkerManager::setCampingActive(bool state, int attempts)
 	campingAttempts = attempts;
 }
 
-int WorkerManager::getNumOfWorkersToChoke()
-{
-	if (numOfWorkersToChoke == 0 ) {
-		BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
-		if (enemyBaseLocation == NULL)	{ // Returns null during init nowhere for campers to go
-			BWAPI::Broodwar->printf("Error calulating number of Workers to choke");
-			return 0; 
-		} 
-		BWAPI::Position basePosition = enemyBaseLocation->getPosition();
-		if (basePosition == NULL)	{ // Returns null during init nowhere for campers to go
-			BWAPI::Broodwar->printf("Error calulating number of Workers to choke");
-			return 0; 
-		} 
-		BWTA::Chokepoint * chokePoint = BWTA::getNearestChokepoint(basePosition);
 
-		int chokeWidth = (int) chokePoint->getWidth();
-		int needExtra = (chokeWidth % 23 > 20)? 1:0;
-		int numOfWorkers = chokeWidth / 23;
-		numOfWorkers += needExtra;
-		numOfWorkersToChoke = numOfWorkers;
-	}
-
-	return numOfWorkersToChoke;
-}
-
-void WorkerManager::checkCampSpots(BWTA::Chokepoint * chokePoint)
-{
-	if(chokeSpots.size() == 0) {
-		if (chokePoint == NULL) { return; } // Returns null during init nowhere for campers to go
-		std::pair<BWAPI::Position, BWAPI::Position>	chokeSides = chokePoint->getSides();
-		int numSpots = getNumOfWorkersToChoke();
-		int f_x = chokeSides.first.x();
-		int f_y = chokeSides.first.y();
-		int s_x = chokeSides.second.x();
-		int s_y = chokeSides.second.y();
-
-
-		int d_x = std::max(f_x, s_x) - std::min(f_x, s_x);
-		int d_y = std::max(f_y, s_y) - std::min(f_y, s_y);
-		int t_x = d_x/numSpots;
-		int t_y = d_y/numSpots;
-		int n_x;
-		if (f_x < s_x) {
-			n_x = f_x + (d_x - std::abs(t_x * (numSpots - 1)))/2;
-		} else {
-			n_x = f_x - (d_x - std::abs(t_x * (numSpots - 1)))/2;
-			t_x = -t_x;
-		}
-	
-		int n_y;
-		if (f_y < s_y) {
-			n_y = f_y + (d_y - std::abs(t_y * (numSpots - 1)))/2;
-		} else {
-			n_y = f_y - (d_y - std::abs(t_y * (numSpots - 1)))/2;
-			t_y = -t_y;
-		}
-
-		chokeSpots.push_back(BWAPI::Position(n_x, n_y));
-	
-		for (int i = 1; i < numSpots; ++i) {
-			n_x += t_x;
-			n_y += t_y;
-			chokeSpots.push_back(BWAPI::Position(n_x, n_y));
-		}
-	}
-}
