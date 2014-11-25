@@ -861,16 +861,39 @@ const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() cons
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
-	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);	
+	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	//int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int hasBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	int hasAcademy = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int hasRefinery = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
+	int hasStims = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs);
 	int numExtra = BWAPI::Broodwar->self()->minerals() / 100;
 
 	//We want constant pumping out of Marines with this strategy.
 	int marinesWanted = numMarines + 4 + numExtra;
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+	int medicsWanted = numMedics + 1;
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+
+	/** SEGMENT NOT WORKING
+	if (numBunkers > 0 && numBunkers < 3 && hasBarracks) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, 1));
+	}
+	**/
 	if( numMarines > 9)
 	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
+	}
+	if( hasAcademy && !hasRefinery) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
+	}
+	if (hasRefinery && hasStims == false) {
 		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
 	}
+	if (hasStims == true && numMarines > 10) {
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	}
+
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 

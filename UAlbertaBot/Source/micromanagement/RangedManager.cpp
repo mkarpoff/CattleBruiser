@@ -37,7 +37,7 @@ void RangedManager::executeMicro(const UnitVector & targets)
 			MapGrid::Instance().GetUnits(ourUnits, order.position, order.radius, true, false);
 			BOOST_FOREACH(BWAPI::Unit * bunker, ourUnits) {
 				if (bunker->getType() == BWAPI::UnitTypes::Terran_Bunker) {
-					if(bunker->getLoadedUnits().size() < 4) {
+					if(bunker->getLoadedUnits().size() <= 4) {
 						rangedUnit->rightClick(bunker);
 					}
 				}
