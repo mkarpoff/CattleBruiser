@@ -48,7 +48,7 @@ void StrategyManager::addStrategies()
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
-	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1 25 25";
+	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
 	terranOpeningBook[TerranAntiFourPool] = "0 0 0 3 0 25 5 5 5 5";
 
 	if (selfRace == BWAPI::Races::Terran)
@@ -57,8 +57,8 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			//usableStrategies.push_back(TerranDefault);
-			//usableStrategies.push_back(TerranRampCamp);
+			usableStrategies.push_back(TerranDefault);
+			usableStrategies.push_back(TerranRampCamp);
 			usableStrategies.push_back(TerranBBS);
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
@@ -856,7 +856,9 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 
 	int numCommandCenter =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 	int numAcademy = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int numAcademycomp =		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy);
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numBarracks=			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 
 	int hasShells =				BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells);
@@ -865,15 +867,22 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 	
 	int numExtra = BWAPI::Broodwar->self()->minerals() / 100;
 	int marinesWanted = numMarines + 7 + numExtra;
-	
+
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Barracks,	numExtra/4));
 
 	//We attempt to get the U-38 Shell Upgrade with this if-statement.
 	
-	if(numAcademy > 0 && numMarines > 10 && hasShells < 1)
+	if(numAcademy == 0 && numMarines > 10)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
+	}
+
+	if(numAcademycomp > 0 && numMarines > 10 && hasShells < 1)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
+
 	if (expandTerran())
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCenter + 1));
@@ -977,28 +986,27 @@ const bool StrategyManager::expandTerran() const
 		return true;
 	}
 	
-	return false;
-	if ((numCommandCenter < 2) && (numMarines > 12 || frame > 9000))
+	if ((numCommandCenter < 2) && (numMarines > 12 && frame > 9000))
 	{
 		return true;
 	}
 	
-	if ((numCommandCenter < 3) && (numMarines > 24 || frame > 15000))
+	if ((numCommandCenter < 3) && (numMarines > 24 && frame > 15000))
 	{
 		return true;
 	}
 
-	if ((numCommandCenter < 4) && (numMarines > 24 || frame > 21000))
+	if ((numCommandCenter < 4) && (numMarines > 24 && frame > 24000))
 	{
 		return true;
 	}
 
-	if ((numCommandCenter < 5) && (numMarines > 24 || frame > 26000))
+	if ((numCommandCenter < 5) && (numMarines > 24 && frame > 30000))
 	{
 		return true;
 	}
 
-	if ((numCommandCenter < 6) && (numMarines > 24 || frame > 30000))
+	if ((numCommandCenter < 6) && (numMarines > 24 && frame > 35000))
 	{
 		return true;
 	}
