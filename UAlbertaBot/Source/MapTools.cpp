@@ -1,4 +1,7 @@
 #include "MapTools.h"
+#include <Windows.h>
+#include <string.h>
+#include <stdio.h>
 
 MapTools & MapTools::Instance() 
 {
@@ -400,27 +403,67 @@ BWTA::Chokepoint * MapTools::getChokePointOnPath(BWTA::BaseLocation * player, BW
 		if ( playerBasePosition == NULL || playerBaseTilePosition == NULL 
 			|| enemyBasePosition == NULL || enemyBaseTilePosition == NULL)	{ return NULL; }
 		
-		return BWTA::getNearestChokepoint(enemyBasePosition);
-
+		//return BWTA::getNearestChokepoint(enemyBasePosition);
+		
+		FILE *stream;
+		fopen_s(&stream, "bwapi-data/AI/chokes.txt", "w");
 		// This won't work for now
-		/*std::vector<BWAPI::TilePosition> path = BWTA::getShortestPath(enemyBaseTilePosition, playerBaseTilePosition);
+		std::vector<BWAPI::TilePosition> path = BWTA::getShortestPath(enemyBaseTilePosition, playerBaseTilePosition);
 		const std::set<BWTA::Chokepoint*> chokePoints = BWTA::getChokepoints();
+		std::set<BWTA::Chokepoint*> validChokePoints;
 		BOOST_FOREACH(BWAPI::TilePosition tile, path ) {
 			BOOST_FOREACH(BWTA::Chokepoint * choke, chokePoints) {
-				int t_x = tile.x();
-				int t_y = tile.y();
-				int c_y = choke->getCenter().x() /320;
-				int c_x = choke->getCenter().y() /320;
-				if (c_x = t_x) {
-					if (c_y = t_y) {
-						BWAPI::Broodwar->printf(" First choke found %d %d %d %d", c_x, c_y, t_x, t_y);
-						return choke;
+				double length = tile.getLength();
+				double t_x = tile.x()*length;
+				double t_y = tile.y()*length;
+				double c_x = choke->getCenter().x();
+				double c_y = choke->getCenter().y();
+
+				if (c_x >= t_x - length*10 && c_x < t_x + length*10) {
+					fprintf(stream, "X:\t%f\t%f\t%f\t%f\t%f\t%f\n",t_x, c_x, t_x+length*10, t_y, c_y, t_y + length*10);
+					if (c_y >= t_y - length*10 && c_y < t_y + length*10) {	
+					fprintf(stream, "\t\t\t%f\t%f\t%f\t%f\t%f\t%f\n",t_x, c_x, t_x+length*10, t_y, c_y, t_y + length*10);
+						validChokePoints.insert(choke);
 					}
 				}
+				
 			}
 		}
-		BWAPI::Broodwar->printf("No choke found");
-		return BWTA::getNearestChokepoint(enemyBasePosition); */
+
+		
+		double p1 = 1000000000;
+		double p2 = 1000000000;
+		BWTA::Chokepoint * choke = NULL;
+		double bds = BWTA::getGroundDistance(playerBaseTilePosition, enemyBaseTilePosition);
+		fprintf(stream, "D_BETWEEN_BASES:\t%f\n", bds);
+		fprintf(stream, "ChokePoint:\t\tX_POS\tY_POS\tD_MY_BASE\tD_THEIR_BASE\tSUM\n");
+		BOOST_FOREACH(BWTA::Chokepoint * c, validChokePoints) {
+			//fprintf(stream, "ChokePoint:\t\t%d\t%d\n", c->getCenter().x(), c->getCenter().y());
+			BWAPI::TilePosition tp =  BWAPI::TilePosition(c->getCenter());
+			tp.makeValid();
+			double pt1 = BWTA::getGroundDistance(tp, playerBaseTilePosition);
+			double pt2 = BWTA::getGroundDistance(tp, enemyBaseTilePosition);
+			double sum = pt1 + pt2;
+			if (pt1 + pt2 < p1 + p2 ) {
+				p1 = pt1;
+				p2 = pt2;
+				choke = c;
+			}
+			fprintf(stream, "ChokePoint:\t\t%4d\t%4d\t%0.4f\t%0.4f\t%0.8f\n", c->getCenter().x(), c->getCenter().y(), pt1, pt2, sum);
+		}
+
+		
+		fclose( stream);
+		BWTA::Chokepoint * c;
+		if ( choke == NULL) {
+			c = BWTA::getNearestChokepoint(enemyBaseTilePosition);
+		} else {
+			c = choke;
+		}
+		BWAPI::Broodwar->printf("No choke found %d %d", c->getCenter().x(), c->getCenter().y());
+		//fprintf(stream, "ChokePoint:\t\t%4d\t%4d\t%0.4f\t%0.4f\t%0.8f\n", c->getCenter().x(), c->getCenter().y(), p1, p2, p1+p2);
+		
+		return c;
 }
 
 
@@ -430,8 +473,8 @@ int MapTools::getNumOfWorkersToChoke(BWTA::Chokepoint * chokePoint)
 		return 0;
 	}
 	int chokeWidth = (int) chokePoint->getWidth();
-	int needExtra = (chokeWidth % 43 > 20)? 1:0;
-	int numOfWorkers = chokeWidth / 23;
+	int needExtra = (chokeWidth % 43 > 22)? 1:0;
+	int numOfWorkers = chokeWidth / 43;
 	numOfWorkers += needExtra;
 	return numOfWorkers;
 }
@@ -443,6 +486,7 @@ void MapTools::checkCampSpots(BWTA::Chokepoint * chokePoint, std::vector<BWAPI::
 		if (chokePoint == NULL) { return; } // Returns null during init nowhere for campers to go
 		std::pair<BWAPI::Position, BWAPI::Position>	chokeSides = chokePoint->getSides();
 		int numSpots = getNumOfWorkersToChoke(chokePoint);
+		if (numSpots == 0) { return; }
 		int f_x = chokeSides.first.x();
 		int f_y = chokeSides.first.y();
 		int s_x = chokeSides.second.x();

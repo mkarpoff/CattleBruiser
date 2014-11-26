@@ -240,7 +240,8 @@ void StrategyManager::setStrategy()
 			{
 				//currentStrategy = TerranDefault;
 				//currentStrategy = TerranAntiFourPool;
-				currentStrategy = TerranBBS;
+				//currentStrategy = TerranBBS;
+				currentStrategy = TerranRampCamp;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{

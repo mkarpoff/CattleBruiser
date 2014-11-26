@@ -219,10 +219,9 @@ void WorkerManager::handleCampWorkers()
 		BWTA::Chokepoint * enemyChoke = MapTools::Instance().getChokePointOnPath(myBaseLocation, enemyBaseLocation);
 		if (enemyChoke == NULL) return;
 		int numNeeded = MapTools::Instance().getNumOfWorkersToChoke(enemyChoke);
-	
+		BWAPI::Broodwar->printf("Number of workers to camp their choke: %d", numNeeded);
 		MapTools::Instance().checkCampSpots(enemyChoke, &chokeSpots);
-		
-		if (numNeeded > 3) { 
+		if (numNeeded > 10) { 
 			useCamping = false;
 		}
 		else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
