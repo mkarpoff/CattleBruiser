@@ -191,7 +191,7 @@ int RangedManager::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit * tar
 
 	// highest priority is something that can attack us or aid in combat
 	if (targetType == BWAPI::UnitTypes::Terran_Medic || canAttackUs ||
-		targetType ==  BWAPI::UnitTypes::Terran_Bunker) 
+		targetType ==  BWAPI::UnitTypes::Terran_Bunker || BWAPI::UnitTypes::Protoss_High_Templar) 
 	{
 		return 3;
 	} 
