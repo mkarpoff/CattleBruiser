@@ -1,4 +1,4 @@
-#pragma once
+/**#pragma once
 
 #include "Common.h"
 #include "BWTA.h"
@@ -28,4 +28,4 @@ public:
 	void drawChokePoints();
 
 	BWAPI::Position getChokepoint(ChokeType type, BWAPI::Player * player);
-};
+};**/

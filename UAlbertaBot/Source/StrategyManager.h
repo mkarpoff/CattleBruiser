@@ -56,7 +56,7 @@ class StrategyManager
 	const	std::string			getProtossDragoonsOpeningBook() const;
 	const	MetaPairVector		getProtossDragoonsBuildOrderGoal() const;
 
-	const	bool				StrategyManager::expandTerran() const;
+	const	bool				expandTerran() const;
 	const	MetaPairVector		getTerranDefaultBuildOrderGoal() const;
 	const   MetaPairVector      getTerranRampCampBuildOrderGoal() const;
 	const	MetaPairVector		getTerranBBSBuildOrderGoal() const;

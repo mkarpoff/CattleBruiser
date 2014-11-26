@@ -1,4 +1,4 @@
-#include "Common.h"
+/**#include "Common.h"
 #include "BWAPI.h"
 #include "HardCodedInfo.h"
 
@@ -183,4 +183,4 @@ void HardCodedInfo::drawChokePoints()
 	{
 		if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawCircleMap(p.x(), p.y(), 10, BWAPI::Colors::Purple, true);
 	}
-}
+}**/
