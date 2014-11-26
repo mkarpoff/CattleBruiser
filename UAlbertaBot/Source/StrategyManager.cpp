@@ -748,34 +748,35 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	//the following sequence of builds allows us to build ghosts and research personnel cloaking
 	if(numFactory > 0)
 	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, numFactory));
 	}
-	if(numStarport > 0)
+	/*if(numStarport > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
-	}
-	if(numScience > 0 )
+	}*/
+	/*if(numScience > 0 )
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Covert_Ops, 1));
-	}
+	}*/
 	if(numTurret < 2)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
 	}
-	if(numCovert > 0)
+	/*if(numCovert > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::TechTypes::Personnel_Cloaking, 1));
-	}
+	}*/
 	if(numEngine > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
 	}
 	
 	
+	
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,		tanksWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,		tanksWanted));
 	//if we have a science lab with covert ops build ghosts
 	if(numCovert > 0)
 	{
