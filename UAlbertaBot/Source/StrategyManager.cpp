@@ -3,6 +3,8 @@
 #include "InformationManager.h"
 #include "..\..\SparCraft\source\SparCraft.h"
 #include "base\WorkerData.h"
+#include <direct.h>
+#include <ShlObj.h>
 #include <iostream>
 #include <cstring>
 
@@ -55,8 +57,8 @@ void StrategyManager::addStrategies()
 
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
-			usableStrategies.push_back(TerranDefault);
-			usableStrategies.push_back(TerranRampCamp);
+			//usableStrategies.push_back(TerranDefault);
+			//usableStrategies.push_back(TerranRampCamp);
 			usableStrategies.push_back(TerranBBS);
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
@@ -152,8 +154,8 @@ void StrategyManager::readResults()
 	// if the file doesn't exist something is wrong so just set them to default settings
 	if (stat(Options::FileIO::FILE_SETTINGS, &buf) == -1)
 	{
-		readDir = "bwapi-data/AI/testio/";
-		writeDir = "bwapi-data/AI/testio/";
+		readDir = "bwapi-data/read/";
+		writeDir = "bwapi-data/write/";
 	}
 	else
 	{
@@ -959,7 +961,6 @@ const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() cons
 
 const bool StrategyManager::expandTerran() const
 {
-	return false;
 	// if there is no place to expand to, we can't expand
 	if (MapTools::Instance().getNextExpansion() == BWAPI::TilePositions::None)
 	{
@@ -975,18 +976,13 @@ const bool StrategyManager::expandTerran() const
 	{
 		return true;
 	}
-
-	// 2nd Nexus Conditions:
-	//		We have 12 or more zealots
-	//		It is past frame 7000
+	
+	return false;
 	if ((numCommandCenter < 2) && (numMarines > 12 || frame > 9000))
 	{
 		return true;
 	}
-
-	// 3nd Nexus Conditions:
-	//		We have 24 or more zealots
-	//		It is past frame 12000
+	
 	if ((numCommandCenter < 3) && (numMarines > 24 || frame > 15000))
 	{
 		return true;
