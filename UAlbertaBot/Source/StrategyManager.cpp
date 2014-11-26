@@ -40,7 +40,9 @@ void StrategyManager::addStrategies()
 	//Conner's opening build. builds marines between major buildings so we have some small defense
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
 	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
-	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+	/*terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";*/
+	terranOpeningBook[TerranDefault] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 1 0 9 5 5 0 5 5 9 6 5 5 5 20 3 5 1 5 5 8 8 13 5 5 5 5 5 5 1 \
+13 5 5 5 5 5 1 12 12 12 12 18 18 1 18";
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
@@ -54,20 +56,20 @@ void StrategyManager::addStrategies()
 		if (enemyRace == BWAPI::Races::Protoss)
 		{
 			usableStrategies.push_back(TerranDefault);
-			usableStrategies.push_back(TerranRampCamp);
-			usableStrategies.push_back(TerranBBS);
+			/*usableStrategies.push_back(TerranRampCamp);
+			usableStrategies.push_back(TerranBBS);*/
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
 		{
 			usableStrategies.push_back(TerranDefault);
-			usableStrategies.push_back(TerranBBS);
-			usableStrategies.push_back(TerranAntiFourPool);
+			/*usableStrategies.push_back(TerranBBS);
+			usableStrategies.push_back(TerranAntiFourPool);*/
 		}
 		else if (enemyRace == BWAPI::Races::Zerg)
 		{
 			usableStrategies.push_back(TerranDefault);
-			usableStrategies.push_back(TerranBBS);
-			usableStrategies.push_back(TerranAntiFourPool);
+			/*usableStrategies.push_back(TerranBBS);
+			usableStrategies.push_back(TerranAntiFourPool);*/
 		}
 		else
 		{
@@ -238,17 +240,19 @@ void StrategyManager::setStrategy()
 
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
-				//currentStrategy = TerranDefault;
+				currentStrategy = TerranDefault;
 				//currentStrategy = TerranAntiFourPool;
-				currentStrategy = TerranBBS;
+				//currentStrategy = TerranBBS;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
-				currentStrategy = TerranAntiFourPool;
+				//currentStrategy = TerranAntiFourPool;
+				currentStrategy = TerranDefault;
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
-				currentStrategy = TerranAntiFourPool;
+				//currentStrategy = TerranAntiFourPool;
+				currentStrategy = TerranDefault;
 			}
 			else
 			{
@@ -736,16 +740,16 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	int marinesWanted = numMarines + 12;
 	int medicsWanted = numMedics + 2;
 	int firebatsWanted = numFirebats + 12;
-	//int vulturesWanted = numVulture + 4;
+	int vulturesWanted = numVulture + 4;
 	int tanksWanted = numTank + 12;
-	int wraithsWanted = numWraith + 1;
+	//int wraithsWanted = numWraith + 1;
 	int ghostsWanted = numGhosts + 12;
 	
 	//the following sequence of builds allows us to build ghosts and research personnel cloaking
 	if(numFactory > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
 	}
 	if(numStarport > 0)
 	{
@@ -771,6 +775,7 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,		tanksWanted));
 	//if we have a science lab with covert ops build ghosts
 	if(numCovert > 0)
 	{
