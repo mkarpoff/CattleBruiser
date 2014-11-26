@@ -3,6 +3,8 @@
 #include "InformationManager.h"
 #include "..\..\SparCraft\source\SparCraft.h"
 #include "base\WorkerData.h"
+#include <iostream>
+#include <cstring>
 
 // constructor
 StrategyManager::StrategyManager() 
@@ -117,14 +119,41 @@ void StrategyManager::addStrategies()
 
 void StrategyManager::readResults()
 {
+	/*FILE *stream;
+	std::string filestr = "bwapi-data/AI/cattlepedigree/";
+	std::string botname = BWAPI::Broodwar->enemy()->getName();
+	filestr.append(botname);
+	filestr.append(".cbdat");
+	const char * file = filestr.c_str();
+	struct stat buf;
+	std::ifstream f_in(file);
+	std::string line;
+	getline(f_in, line);
+	results[TerranDefault].first = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranDefault].second = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranBBS].first = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranBBS].second = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranAntiFourPool].first = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranAntiFourPool].second = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranRampCamp].first = atoi(line.c_str());
+	getline(f_in, line);
+	results[TerranRampCamp].second = atoi(line.c_str());
+	f_in.close();*/
+
 	// read in the name of the read and write directories from settings file
 	struct stat buf;
 
 	// if the file doesn't exist something is wrong so just set them to default settings
 	if (stat(Options::FileIO::FILE_SETTINGS, &buf) == -1)
 	{
-		readDir = "bwapi-data/testio/read/";
-		writeDir = "bwapi-data/testio/write/";
+		readDir = "bwapi-data/AI/testio/";
+		writeDir = "bwapi-data/AI/testio/";
 	}
 	else
 	{
@@ -240,8 +269,8 @@ void StrategyManager::setStrategy()
 			{
 				//currentStrategy = TerranDefault;
 				//currentStrategy = TerranAntiFourPool;
-				//currentStrategy = TerranBBS;
-				currentStrategy = TerranRampCamp;
+				currentStrategy = TerranBBS;
+				//currentStrategy = TerranRampCamp;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
@@ -258,6 +287,8 @@ void StrategyManager::setStrategy()
 			}
 		}
 	}
+	
+	
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
 		switch(currentStrategy) {
 		case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;

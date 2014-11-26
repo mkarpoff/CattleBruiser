@@ -31,6 +31,7 @@ namespace Options
             MICRO_SEARCH_TEST,      // testing micro search on custom maps
             REPLAY_VIS_TEST,         // testing opengl visualization with replays
 			BUILD_ORDER_DEMO,
+			CATTLE_MODE,
             NUM_MODES
         };
 

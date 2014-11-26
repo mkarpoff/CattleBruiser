@@ -32,7 +32,8 @@ void UAlbertaBotModule::onStart()
 	BWAPI::Broodwar->enableFlag(BWAPI::Flag::UserInput);
 	//BWAPI::Broodwar->enableFlag(BWAPI::Flag::CompleteMapInformation);
 
-    Options::BotModes::SetBotMode(Options::BotModes::AIIDE_TOURNAMENT);
+    //Options::BotModes::SetBotMode(Options::BotModes::AIIDE_TOURNAMENT);
+	Options::BotModes::SetBotMode(Options::BotModes::CATTLE_MODE);
 	Options::Modules::checkOptions();
 	
     if (Options::Modules::USING_GAMECOMMANDER)
