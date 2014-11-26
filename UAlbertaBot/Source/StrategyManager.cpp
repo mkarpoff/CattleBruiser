@@ -48,7 +48,8 @@ void StrategyManager::addStrategies()
         // 2. get some marines, build academy. More marines, medic after academy. Missile turret after some more marines.
         // 3. Hit factory asap - Leads to quicker tanks/vultures
         // * Can edit marine sub-build order in order to see what is best defense build.
-        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 0 5 5 6 5 5 5 20 3 5 5 5 8 8 5 5 5 5 22 5 5 5 5 9 12 9 13 5 5 12 5 5 12 12  18 18";
+        terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 1 0 9 5 5 0 5 5 9 6 5 5 5 20 3 5 1 5 5 8 8 13 5 5 5 5 5 5 1 \
+												  13 5 5 5 5 5 1 12 12 12 12 18 18 1 18";
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 3 1 0 5 5 0 5 5 1";
 
@@ -776,12 +777,7 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	// then push lots more tanks
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));
-	//if we have a science lab with covert ops build ghosts
-	/*
-	if(numCovert > 0)
-	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Ghost,		ghostsWanted));
-	}*/
+
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
