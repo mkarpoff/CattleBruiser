@@ -232,6 +232,20 @@ void StrategyManager::setStrategy()
 			if (sum == 0)
 			{
 				currentStrategy = usableStrategies[strategyIndex];
+				if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
+					switch(currentStrategy) {
+					case TerranBBS: BWAPI::Broodwar->printf("Current Strategy: 1 TerranBBS"); return;
+					case TerranRampCamp: 
+						if(!WorkerManager::Instance().isCampingActive()) {
+							WorkerManager::Instance().setCampingActive(true, 1);
+						}
+						BWAPI::Broodwar->printf("Current Strategy: 2 TerranRampCamp");
+						return;
+					case TerranAntiFourPool: BWAPI::Broodwar->printf("Current Strategy: 3 TerranAntiFourPool"); return;
+					case TerranDefault: BWAPI::Broodwar->printf("Current Strategy: 0 TerranDefault"); return;
+					default: BWAPI::Broodwar->printf("Current Strategy: Unknown"); return;
+					}
+				}
 				return;
 			}
 		}
@@ -249,6 +263,7 @@ void StrategyManager::setStrategy()
 		}
 		
 		currentStrategy = usableStrategies[bestStrategyIndex];
+
 	}
 	else
 	{
@@ -286,21 +301,35 @@ void StrategyManager::setStrategy()
 				currentStrategy = TerranDefault;
 			}
 		}
+		if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
+			switch(currentStrategy) {
+			case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
+			case TerranRampCamp: 
+				if(!WorkerManager::Instance().isCampingActive()) {
+					WorkerManager::Instance().setCampingActive(true, 1);
+				}
+				BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
+				return;
+			case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
+		
+			default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+			}
+		}
 	}
 	
 	
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
 		switch(currentStrategy) {
-		case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
+		case TerranBBS: BWAPI::Broodwar->printf("Current Strategy: 1 TerranBBS"); return;
 		case TerranRampCamp: 
 			if(!WorkerManager::Instance().isCampingActive()) {
 				WorkerManager::Instance().setCampingActive(true, 1);
 			}
-			BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
+			BWAPI::Broodwar->printf("Current Strategy: 2 TerranRampCamp");
 			return;
-		case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
-		
-		default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
+		case TerranAntiFourPool: BWAPI::Broodwar->printf("Current Strategy: 3 TerranAntiFourPool"); return;
+		case TerranDefault: BWAPI::Broodwar->printf("Current Strategy: 0 TerranDefault"); return;
+		default: BWAPI::Broodwar->printf("Current Strategy: Unknown"); return;
 		}
 	}
 }
@@ -422,7 +451,7 @@ const int StrategyManager::getNumberUnitsNeededForAttack() const
 		case TerranDefault:		return 1;
 		case TerranBBS:			return 1;
 		case TerranRampCamp:	return 1;
-		case TerranAntiFourPool:return 1;
+		case TerranAntiFourPool:return 10;
 		default: return 1;
 		}
 	}
@@ -831,7 +860,10 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 	int hasShells =				BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells);
 
 	//We want constant pumping out of Marines with this strategy.
-	int marinesWanted = numMarines + 2;
+	
+	int numExtra = BWAPI::Broodwar->self()->minerals() / 100;
+	int marinesWanted = numMarines + 7 + numExtra;
+	
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 
 	//We attempt to get the U-38 Shell Upgrade with this if-statement.
