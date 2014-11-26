@@ -852,7 +852,7 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
 	int numTankS = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
 
-	
+	int numCommandCenter =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 	int numAcademy = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
@@ -871,6 +871,10 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 	if(numAcademy > 0 && numMarines > 10 && hasShells < 1)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
+	if (expandTerran())
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCenter + 1));
 	}
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
@@ -950,6 +954,60 @@ const MetaPairVector StrategyManager::getTerranAntiFourPoolBuildOrderGoal() cons
 	}
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+}
+
+
+const bool StrategyManager::expandTerran() const
+{
+	return false;
+	// if there is no place to expand to, we can't expand
+	if (MapTools::Instance().getNextExpansion() == BWAPI::TilePositions::None)
+	{
+		return false;
+	}
+
+	int numCommandCenter =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	int numMarines =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int frame =					BWAPI::Broodwar->getFrameCount();
+
+	// if there are more than 10 idle workers, expand
+	if (WorkerManager::Instance().getNumIdleWorkers() > 10)
+	{
+		return true;
+	}
+
+	// 2nd Nexus Conditions:
+	//		We have 12 or more zealots
+	//		It is past frame 7000
+	if ((numCommandCenter < 2) && (numMarines > 12 || frame > 9000))
+	{
+		return true;
+	}
+
+	// 3nd Nexus Conditions:
+	//		We have 24 or more zealots
+	//		It is past frame 12000
+	if ((numCommandCenter < 3) && (numMarines > 24 || frame > 15000))
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 4) && (numMarines > 24 || frame > 21000))
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 5) && (numMarines > 24 || frame > 26000))
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 6) && (numMarines > 24 || frame > 30000))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 const MetaPairVector StrategyManager::getZergBuildOrderGoal() const

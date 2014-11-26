@@ -56,15 +56,16 @@ class StrategyManager
 	const	std::string			getProtossDragoonsOpeningBook() const;
 	const	MetaPairVector		getProtossDragoonsBuildOrderGoal() const;
 
+	const	bool				StrategyManager::expandTerran() const;
 	const	MetaPairVector		getTerranDefaultBuildOrderGoal() const;
 	const   MetaPairVector      getTerranRampCampBuildOrderGoal() const;
 	const	MetaPairVector		getTerranBBSBuildOrderGoal() const;
 	const	MetaPairVector		getTerranAntiFourPoolBuildOrderGoal() const;
 	const	MetaPairVector		getZergBuildOrderGoal() const;
 
-	const	MetaPairVector		getProtossOpeningBook() const;
-	const	MetaPairVector		getTerranOpeningBook() const;
-	const	MetaPairVector		getZergOpeningBook() const;
+	const	std::string			getProtossOpeningBook() const;
+	const	std::string			getTerranOpeningBook() const;
+	const	std::string			getZergOpeningBook() const;
 
 public:
 
