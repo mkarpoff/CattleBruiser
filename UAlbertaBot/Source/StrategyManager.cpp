@@ -301,21 +301,8 @@ void StrategyManager::setStrategy()
 				currentStrategy = TerranDefault;
 			}
 		}
-		if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
-			switch(currentStrategy) {
-			case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
-			case TerranRampCamp: 
-				useCamping = true;
-				BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
-				return;
-			case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
-		
-			default: BWAPI::Broodwar->printf("<Current Strategy> Unknown"); return;
-			}
-		}
 	}
-	
-	
+
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
 		switch(currentStrategy) {
 		case TerranBBS: BWAPI::Broodwar->printf("Current Strategy: 1 TerranBBS"); return;
