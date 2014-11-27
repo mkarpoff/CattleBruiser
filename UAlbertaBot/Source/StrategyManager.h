@@ -34,6 +34,7 @@ class StrategyManager
 	BWAPI::Race					enemyRace;
 
 	bool						firstAttackSent;
+	bool						useCamping;
 
 	void	addStrategies();
 	void	setStrategy();
@@ -83,6 +84,8 @@ public:
 	const	bool				rushDetected();
 
 	const	int					getCurrentStrategy();
+	const	bool				isCampingActive();
+			void				isCampingActive(bool state);
 
 	const	MetaPairVector		getBuildOrderGoal();
 	const	std::string			getOpeningBook() const;
