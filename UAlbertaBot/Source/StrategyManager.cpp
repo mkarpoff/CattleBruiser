@@ -238,9 +238,7 @@ void StrategyManager::setStrategy()
 					switch(currentStrategy) {
 					case TerranBBS: BWAPI::Broodwar->printf("Current Strategy: 1 TerranBBS"); return;
 					case TerranRampCamp: 
-						if(!WorkerManager::Instance().isCampingActive()) {
-							WorkerManager::Instance().setCampingActive(true, 1);
-						}
+						useCamping = true;
 						BWAPI::Broodwar->printf("Current Strategy: 2 TerranRampCamp");
 						return;
 					case TerranAntiFourPool: BWAPI::Broodwar->printf("Current Strategy: 3 TerranAntiFourPool"); return;
@@ -307,9 +305,7 @@ void StrategyManager::setStrategy()
 			switch(currentStrategy) {
 			case TerranBBS: BWAPI::Broodwar->printf("<Current Strategy> TerranBBS"); return;
 			case TerranRampCamp: 
-				if(!WorkerManager::Instance().isCampingActive()) {
-					WorkerManager::Instance().setCampingActive(true, 1);
-				}
+				useCamping = true;
 				BWAPI::Broodwar->printf("<Current Strategy> TerranRampCamp");
 				return;
 			case TerranAntiFourPool: BWAPI::Broodwar->printf("<Current Strategy> TerranAntiFourPool"); return;
@@ -324,9 +320,7 @@ void StrategyManager::setStrategy()
 		switch(currentStrategy) {
 		case TerranBBS: BWAPI::Broodwar->printf("Current Strategy: 1 TerranBBS"); return;
 		case TerranRampCamp: 
-			if(!WorkerManager::Instance().isCampingActive()) {
-				WorkerManager::Instance().setCampingActive(true, 1);
-			}
+			useCamping = true;
 			BWAPI::Broodwar->printf("Current Strategy: 2 TerranRampCamp");
 			return;
 		case TerranAntiFourPool: BWAPI::Broodwar->printf("Current Strategy: 3 TerranAntiFourPool"); return;
@@ -1037,3 +1031,11 @@ const int StrategyManager::getCurrentStrategy()
  {
 	 return currentStrategy;
  }
+
+const bool StrategyManager::isCampingActive() {
+	return useCamping;
+}
+
+void StrategyManager::isCampingActive(bool state) {
+	useCamping = state;
+}

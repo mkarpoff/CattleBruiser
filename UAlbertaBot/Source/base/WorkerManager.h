@@ -20,17 +20,12 @@ class WorkerManager {
 
 	void						setMineralWorker(BWAPI::Unit * unit);
 	
-	bool						useCamping;
+	
 	int							campingAttempts;
 	std::vector<BWAPI::Position> chokeSpots;
 	WorkerManager();
 
 public:
-
-
-	
-	bool						isCampingActive();
-	void						setCampingActive(bool state, int tries=-1);
 
 	void						update();
 	void						onUnitDestroy(BWAPI::Unit * unit);

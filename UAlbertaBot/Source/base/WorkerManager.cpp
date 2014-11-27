@@ -1,11 +1,12 @@
 #include "Common.h"
 #include "WorkerManager.h"
+#include "StrategyManager.h"
 
 WorkerManager::WorkerManager() 
     : workersPerRefinery(3)
 {
     previousClosestWorker = NULL;
-	useCamping = false;
+	campingAttempts = 1;
 }
 
 void WorkerManager::update() 
@@ -207,7 +208,8 @@ void WorkerManager::handleMoveWorkers()
 
 void WorkerManager::handleCampWorkers() 
 {
-	if (!useCamping) {
+	
+	if (! StrategyManager::Instance().isCampingActive()) {
 		return;
 	}
 	if (chokeSpots.empty()) {
@@ -222,7 +224,7 @@ void WorkerManager::handleCampWorkers()
 		BWAPI::Broodwar->printf("Number of workers to camp their choke: %d", numNeeded);
 		MapTools::Instance().checkCampSpots(enemyChoke, &chokeSpots);
 		if (numNeeded > 10) { 
-			useCamping = false;
+			StrategyManager::Instance().isCampingActive(false);
 		}
 		else if (workerData.getNumCamperWorkers() < numNeeded && campingAttempts != 0) {
 			bool builtCampers = workerData.createCampers(numNeeded);
@@ -708,16 +710,3 @@ WorkerManager & WorkerManager::Instance()
 	static WorkerManager instance;
 	return instance;
 }
-
-bool WorkerManager::isCampingActive()
-{
-	return useCamping;
-}
-
-void WorkerManager::setCampingActive(bool state, int attempts)
-{
-	useCamping = state;
-	campingAttempts = attempts;
-}
-
-
