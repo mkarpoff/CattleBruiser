@@ -257,9 +257,20 @@ void WorkerManager::handleCampWorkers()
 			worker->move(chokeSpots.at(spot++));
 		}
 	}
-
 }
 
+void WorkerManager::handleBunkerRepairWorkers()
+{
+	BOOST_FOREACH(BWAPI::Unit * bunker, bunkers) {
+		BWAPI::Unit * worker = bunkerRepairWorker[bunker];
+		if ( worker == NULL ) {
+			std::set<BWAPI::Unit*> workers = workerData.getWorkers();
+			BOOST_FOREACH(BWAPI::Unit * worker, workers) {
+				if (worker->//a make this change the worker to a repair worker.
+			}
+		}
+	}
+}
 // set a worker to mine minerals
 void WorkerManager::setMineralWorker(BWAPI::Unit * unit)
 {
