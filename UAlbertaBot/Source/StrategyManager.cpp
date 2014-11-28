@@ -41,15 +41,20 @@ void StrategyManager::addStrategies()
 
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
 
-	//Conner's opening build. builds marines between major buildings so we have some small defense
-	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
-	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
-	//Everything after 6 for factory is in there so there is no downtime.
-	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6 0 5 0 5 5 0 5 8";
-	//This is WIP
+
+	//Ben's previous opening book - Too long, it gets stuck.
+	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6 0 5 0 5 5 0 5 8";
+
+	//Current Default
+	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 0 3 0 25 5 5 5 5";
+
+	//Ramp Camp
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
-	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
-	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1";
+
+	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS - Note: No longer based on this, like at all.
+	terranOpeningBook[TerranBBS] = "0 0 0 0 0 3 1 3 0 5 5 0 5 5 1 25";
+
+	//Anti Four Pool
 	terranOpeningBook[TerranAntiFourPool] = "0 0 0 3 0 25 5 5 5 5";
 
 	if (selfRace == BWAPI::Races::Terran)
@@ -447,9 +452,9 @@ const int StrategyManager::getNumberUnitsNeededForAttack() const
 {
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran) {
 		switch(currentStrategy) {
-		case TerranDefault:		return 1;
-		case TerranBBS:			return 1;
-		case TerranRampCamp:	return 1;
+		case TerranDefault:		return 10;
+		case TerranBBS:			return 5;
+		case TerranRampCamp:	return 5;
 		case TerranAntiFourPool:return 10;
 		default: return 1;
 		}
@@ -777,96 +782,109 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
+	//Aedan - This is Ben's old opening book. I've modified it to be a bit more defensive, with the same goals in mind.
+	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6 0 5 0 5 5 0 5 8";
+
 	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	int numFirebats = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
-	int numGhosts = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
 	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
-	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numTankS = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
+	int numBunkers =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int numCommandCenter =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	int numRefinery =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
+	int numAcademy = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int numAcademycomp =		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy);
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numFactorycomp =		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numBarracks=			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
-	int numStarport = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	int numScience = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
-	int numCovert = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Covert_Ops);
+	int numMachineShopcomp =	BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int hasShells =				BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells);
 	int numTurret = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
-	//int armor =					BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
 	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
-	int marinesWanted = numMarines + 5;
-	int medicsWanted = numMedics + 2;
-	//int firebatsWanted = numFirebats + 12;
-	//int vulturesWanted = numVulture + 3;
-	int tanksWanted = numTank + 5;
-	//int wraithsWanted = numWraith + 1;
-	//int ghostsWanted = numGhosts + 12;
-	
-	
-	
-	// Ben - Removed this because we aren't using air. No need for starport.
-	// We also do not need covert ops.
-	if(numFactory > 0)
-	{
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+
+
+	int extraMin = BWAPI::Broodwar->self()->minerals() / 100;
+	int extraGas = BWAPI::Broodwar->self()->gas() / 150;
+
+	int marinesWanted = numMarines + 2 + extraMin;
+	int medicsWanted = (numMarines - numMedics)/10;
+	int tanksWanted = numTank + 2 + extraGas;	
+
+	//Marines
+	if (numBarracks > 0) {
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	}
-	/*if(numStarport > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
+
+	//Bunkers
+	if (numBarracks > 0 && numBunkers < 2) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, 1));
 	}
-	if(numScience > 0 )
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Covert_Ops, 1));
-	}*/
-	if(numTurret < 2)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
+	//Refinery
+	if (numBarracks > 0) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
 	}
-	/*if(numCovert > 0)
+	//Academy
+	if(numAcademy < 1 && numMarines > 10)
 	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Personnel_Cloaking, 1));
-	}*/
-	if(numEngine > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
 	}
-	
-	if(numFactory <= 3)
+
+	//Shells
+	if(numAcademycomp > 0 && numMarines > 10 && hasShells < 1)
 	{
+		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
+
+	//Medics
+	if (numAcademycomp > 0) {
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,	medicsWanted));
+	}
+
+	//Factory
+	if (numAcademycomp > 0 && numFactory < 2) {
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Factory, 1));
 	}
 
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,		vulturesWanted));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));
-	//if we have a science lab with covert ops build ghosts
-	/*if(numCovert > 0)
+	//Machine Shop
+	if (numMachineShop < numFactorycomp) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+	}
+
+	//Tanks
+	if (numFactorycomp > 0 && numMachineShopcomp > 0) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, tanksWanted));
+	}
+
+	//Expansion
+	if (expandTerran())
 	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Ghost,		ghostsWanted));
-	}*/
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCenter + 1));
+	}
+
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
 const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 {
-	bool medicFlag = false;
-
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
 	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numRefinery =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
 	int numVulture =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
 	int numTank = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
 	int numTankS = 				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
-
+	int numBunkers =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 	int numCommandCenter =		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 	int numAcademy = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 	int numAcademycomp =		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy);
 	int numFactory = 			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numFactorycomp =		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numBarracks=			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 	int numMachineShop = 		BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
-
 	int hasShells =				BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells);
 
 	//We want constant pumping out of Marines with this strategy.
@@ -878,7 +896,14 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Barracks,	numExtra/4));
 
 	//We attempt to get the U-38 Shell Upgrade with this if-statement.
-	
+
+	//Refinery
+	if (numBarracks > 0) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
+	}
+	if (numBarracks >= 1 && numBunkers < 2) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, 1));
+	}
 	if(numAcademy == 0 && numMarines > 10)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
@@ -889,6 +914,12 @@ const MetaPairVector StrategyManager::getTerranBBSBuildOrderGoal() const
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
 
+	if (numAcademycomp > 0) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Factory, 1));
+	}
+	if (numFactorycomp > 0) {
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Vulture, numFactorycomp));
+	}
 	if (expandTerran())
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCenter + 1));
