@@ -44,7 +44,8 @@ void StrategyManager::addStrategies()
 	//Conner's opening build. builds marines between major buildings so we have some small defense
 	//opening builds an academy, an engineering bay, a factory, marine shell upgrade, and missile turret to detect cloaked units
 	//terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 5 5 5 5 5 6 5 5 5 5 5 20 5 5 5 5 5 9 17 5 5 5 5 5 8 8 21";
-	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+	//Everything after 6 for factory is in there so there is no downtime.
+	terranOpeningBook[TerranDefault]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6 0 5 0 5 5 0 5 8";
 	//This is WIP
 	terranOpeningBook[TerranRampCamp] = "0 0 0 0 0 3 1 0 5 5 0 5 5 1";
 	//Terran BBS http://wiki.teamliquid.net/starcraft2/BBS
@@ -290,10 +291,12 @@ void StrategyManager::setStrategy()
 			else if (enemyRace == BWAPI::Races::Terran)
 			{
 				currentStrategy = TerranAntiFourPool;
+				//currentStrategy = TerranDefault;
 			}
 			else if (enemyRace == BWAPI::Races::Zerg)
 			{
 				currentStrategy = TerranAntiFourPool;
+				//currentStrategy = TerranDefault;
 			}
 			else
 			{
@@ -790,49 +793,58 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	//int armor =					BWAPI::Broodwar->self()->allUnitCount(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
 	int numEngine =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
-	int marinesWanted = numMarines + 12;
+	int marinesWanted = numMarines + 5;
 	int medicsWanted = numMedics + 2;
-	int firebatsWanted = numFirebats + 12;
-	//int vulturesWanted = numVulture + 4;
-	int tanksWanted = numTank + 12;
-	int wraithsWanted = numWraith + 1;
-	int ghostsWanted = numGhosts + 12;
+	//int firebatsWanted = numFirebats + 12;
+	//int vulturesWanted = numVulture + 3;
+	int tanksWanted = numTank + 5;
+	//int wraithsWanted = numWraith + 1;
+	//int ghostsWanted = numGhosts + 12;
 	
-	//the following sequence of builds allows us to build ghosts and research personnel cloaking
+	
+	
+	// Ben - Removed this because we aren't using air. No need for starport.
+	// We also do not need covert ops.
 	if(numFactory > 0)
 	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
+		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
 	}
-	if(numStarport > 0)
+	/*if(numStarport > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
 	}
 	if(numScience > 0 )
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Covert_Ops, 1));
-	}
+	}*/
 	if(numTurret < 2)
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 1));
 	}
-	if(numCovert > 0)
+	/*if(numCovert > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::TechTypes::Personnel_Cloaking, 1));
-	}
+	}*/
 	if(numEngine > 0)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
 	}
 	
-	
+	if(numFactory <= 3)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Factory, 1));
+	}
+
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,		vulturesWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));
 	//if we have a science lab with covert ops build ghosts
-	if(numCovert > 0)
+	/*if(numCovert > 0)
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Ghost,		ghostsWanted));
-	}
+	}*/
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
 
