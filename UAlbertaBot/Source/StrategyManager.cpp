@@ -854,7 +854,7 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	}
 
 	//Tanks
-	if (numFactorycomp > 0 && numMachineShopcomp > 0) {
+	if (numMachineShop > 0) {
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, tanksWanted));
 	}
 
