@@ -179,6 +179,48 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job)
 	}
 }
 
+BWAPI::Unit * WorkerData::getLeastValuableWorker() {
+	BWAPI::Unit * mineralWorker = NULL;
+	BWAPI::Unit * gasWorker = NULL;
+	BWAPI::Unit * campWorker = NULL;
+	BWAPI::Unit * scoutWorker = NULL;
+	BWAPI::Unit * repairWorker = NULL;
+	BWAPI::Unit * combatWorker = NULL;
+	BOOST_FOREACH (BWAPI::Unit * unit, workers) {
+		WorkerData::WorkerJob job = workerJobMap[unit];
+		if ( job == WorkerData::Idle) {
+			return unit;
+		} else if (job == WorkerData::Minerals && mineralWorker == NULL) {
+			mineralWorker = unit;
+		} else if (job == WorkerData::Camp && campWorker == NULL) {
+			campWorker = unit;
+		} else if (job == WorkerData::Gas && gasWorker == NULL) {
+			gasWorker = unit;
+		} else if (job == WorkerJob::Scout && scoutWorker == NULL) {
+			scoutWorker = unit;
+		} else if (job == WorkerJob::Repair && repairWorker == NULL) {
+			repairWorker = unit;
+		} else if (job == WorkerJob::Combat && combatWorker == NULL) {
+			combatWorker = unit;
+		}
+	}
+
+	if (mineralWorker != NULL) {
+		return mineralWorker;
+	} else if (gasWorker != NULL) {
+		return gasWorker;
+	} else if (repairWorker != NULL) {
+		return repairWorker;
+	} else if (scoutWorker != NULL) {
+		return scoutWorker;
+	} else if (campWorker != NULL) {
+		return campWorker;
+	} else if (combatWorker != NULL) {
+		return combatWorker;
+	}
+	return NULL;
+}
+
 /*
  * returns true iff there were less than 3 campers and it was able to make enough to have 3 campers
  */

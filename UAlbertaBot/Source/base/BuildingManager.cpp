@@ -327,6 +327,9 @@ void BuildingManager::checkForCompletedBuildings() {
 			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 			{
 				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+				if ( b.buildingUnit->getType() == BWAPI::UnitTypes::Terran_Bunker) {
+					WorkerManager::Instance().addBunker(b.buildingUnit);
+				}
 			}
 
 			// remove this unit from the under construction vector

@@ -7,6 +7,8 @@ WorkerManager::WorkerManager()
 {
     previousClosestWorker = NULL;
 	campingAttempts = 1;
+	bunkers = std::set<BWAPI::Unit *>();
+	bunkerRepairWorker = std::map<BWAPI::Unit *, BWAPI::Unit *>();
 }
 
 void WorkerManager::update() 
@@ -28,6 +30,8 @@ void WorkerManager::update()
 	
 	
 	handleCampWorkers();
+	
+	handleBunkerRepairWorkers();
 
 	drawResourceDebugInfo();
 	//drawWorkerInformation(450,20);
@@ -261,13 +265,16 @@ void WorkerManager::handleCampWorkers()
 
 void WorkerManager::handleBunkerRepairWorkers()
 {
+	if (bunkers.size() == 0 ) { 
+		BWAPI::Broodwar->printf
+		return; 
+	}
 	BOOST_FOREACH(BWAPI::Unit * bunker, bunkers) {
 		BWAPI::Unit * worker = bunkerRepairWorker[bunker];
 		if ( worker == NULL ) {
-			std::set<BWAPI::Unit*> workers = workerData.getWorkers();
-			BOOST_FOREACH(BWAPI::Unit * worker, workers) {
-				if (worker->//a make this change the worker to a repair worker.
-			}
+			BWAPI::Unit * unit = workerData.getLeastValuableWorker();
+			workerData.setWorkerJob(unit, WorkerData::Repair, bunker);
+			bunkerRepairWorker[bunker] = unit;
 		}
 	}
 }
@@ -720,4 +727,8 @@ WorkerManager & WorkerManager::Instance()
 
 	static WorkerManager instance;
 	return instance;
+}
+
+void WorkerManager::addBunker(BWAPI::Unit * unit) {
+	bunkers.insert(unit);
 }

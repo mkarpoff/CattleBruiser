@@ -24,7 +24,7 @@ class WorkerManager {
 	int							campingAttempts;
 	std::vector<BWAPI::Position> chokeSpots;
 	std::set<BWAPI::Unit *>		bunkers;
-	std::map<BWAPI::Unit *, BWAPI::Unit*>	bunkerRepairWorker;
+	std::map<BWAPI::Unit *, BWAPI::Unit *>	bunkerRepairWorker;
 	WorkerManager();
 
 public:
@@ -36,6 +36,7 @@ public:
 	void						onUnitRenegade(BWAPI::Unit * unit);
 	void						finishedWithWorker(BWAPI::Unit * unit);
 
+	void						addBunker(BWAPI::Unit * unit);
 	void						handleIdleWorkers();
 	void						handleGasWorkers();
 	void						handleMoveWorkers();
