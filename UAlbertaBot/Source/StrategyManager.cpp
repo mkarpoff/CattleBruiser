@@ -288,9 +288,9 @@ void StrategyManager::setStrategy()
 
 			if (enemyRace == BWAPI::Races::Protoss)
 			{
-				//currentStrategy = TerranDefault;
+				currentStrategy = TerranDefault;
 				//currentStrategy = TerranAntiFourPool;
-				currentStrategy = TerranBBS;
+				//currentStrategy = TerranBBS;
 				//currentStrategy = TerranRampCamp;
 			}
 			else if (enemyRace == BWAPI::Races::Terran)
@@ -849,7 +849,7 @@ const MetaPairVector StrategyManager::getTerranDefaultBuildOrderGoal() const
 	}
 
 	//Machine Shop
-	if (numMachineShop < numFactorycomp) {
+	if (0 < numFactorycomp) {
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Machine_Shop, 1));
 	}
 
