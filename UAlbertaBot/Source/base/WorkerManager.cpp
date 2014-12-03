@@ -265,8 +265,7 @@ void WorkerManager::handleCampWorkers()
 
 void WorkerManager::handleBunkerRepairWorkers()
 {
-	if (bunkers.size() == 0 ) { 
-		BWAPI::Broodwar->printf
+	if (bunkers.size() == 0 ) {
 		return; 
 	}
 	BOOST_FOREACH(BWAPI::Unit * bunker, bunkers) {
