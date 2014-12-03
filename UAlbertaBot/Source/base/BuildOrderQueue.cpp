@@ -20,7 +20,7 @@ void BuildOrderQueue::clearAll()
 	lowestPriority = 0;
 }
 
-BuildOrderItem<PRIORITY_TYPE> & BuildOrderQueue::getHighestPriorityItem() 
+BuildOrderItem<PRIORITY_TYPE> BuildOrderQueue::getHighestPriorityItem() 
 {
 	// reset the number of skipped items to zero
 	numSkippedItems = 0;
