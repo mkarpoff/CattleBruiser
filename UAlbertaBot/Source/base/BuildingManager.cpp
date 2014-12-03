@@ -322,7 +322,7 @@ void BuildingManager::checkForCompletedBuildings() {
 		if (b.buildingUnit->isCompleted()) 
 		{
 			if (debugMode) { BWAPI::Broodwar->printf("Construction Completed: %s", b.type.getName().c_str()); }
-
+			
 			// if we are terran, give the worker back to worker manager
 			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 			{

@@ -33,12 +33,14 @@ void RangedManager::executeMicro(const UnitVector & targets)
 			}
 		}
 		if (order.type == order.Attack || order.type == order.Defend) {
-			UnitVector ourUnits;
-			MapGrid::Instance().GetUnits(ourUnits, order.position, order.radius, true, false);
-			BOOST_FOREACH(BWAPI::Unit * bunker, ourUnits) {
-				if (bunker->getType() == BWAPI::UnitTypes::Terran_Bunker) {
-					if(bunker->getLoadedUnits().size() <= 3) {
-						rangedUnit->rightClick(bunker);
+			if (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Marine) {
+				UnitVector ourUnits;
+				MapGrid::Instance().GetUnits(ourUnits, order.position, order.radius, true, false);
+				BOOST_FOREACH(BWAPI::Unit * bunker, ourUnits) {
+					if (bunker->getType() == BWAPI::UnitTypes::Terran_Bunker) {
+						if(bunker->getLoadedUnits().size() <= 3) {
+							rangedUnit->rightClick(bunker);
+						}
 					}
 				}
 			}

@@ -270,11 +270,9 @@ void WorkerManager::handleBunkerRepairWorkers()
 	}
 
 	BOOST_FOREACH(BWAPI::Unit * bunker, bunkers) {
-		BWAPI::Unit * worker = bunkerRepairWorker[bunker];
-		if ( worker == NULL ) {
-			BWAPI::Unit * unit = workerData.getLeastValuableWorker();
-			workerData.setWorkerJob(unit, WorkerData::Repair, bunker);
-			bunkerRepairWorker[bunker] = unit;
+		if ( bunker->getHitPoints() < BWAPI::UnitTypes::Terran_Bunker.maxHitPoints() && !bunker->isBeingHealed()) {
+			BWAPI::Unit * worker = workerData.getLeastValuableWorker();
+			workerData.setWorkerJob(worker, WorkerData::Repair, bunker);
 		}
 	}
 }
@@ -730,5 +728,7 @@ WorkerManager & WorkerManager::Instance()
 }
 
 void WorkerManager::addBunker(BWAPI::Unit * unit) {
+	
+	BWAPI::Broodwar->printf("Bunker Terran Building Completed"); 
 	bunkers.insert(unit);
 }
