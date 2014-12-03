@@ -268,6 +268,7 @@ void WorkerManager::handleBunkerRepairWorkers()
 	if (bunkers.size() == 0 ) {
 		return; 
 	}
+
 	BOOST_FOREACH(BWAPI::Unit * bunker, bunkers) {
 		BWAPI::Unit * worker = bunkerRepairWorker[bunker];
 		if ( worker == NULL ) {
